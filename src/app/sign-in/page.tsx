@@ -15,6 +15,7 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { FcGoogle } from "react-icons/fc";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -47,6 +48,19 @@ export default function SignIn() {
       setLoding(false);
     }
   }
+
+  async function handleGoogleLogin() {
+  setError("");
+
+  try {
+    await signIn.social({
+      provider: "google",
+      callbackURL: "/dashboard",
+    });
+  } catch {
+    setError("Failed to continue with Google.");
+  }
+}
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4">
       <Card className="w-full max-w-md border-border/50 shadow-xl">
@@ -95,6 +109,15 @@ export default function SignIn() {
           </CardContent>
 
           <CardFooter className="flex flex-col gap-4">
+            <Button
+  type="button"
+  variant="outline"
+  className="h-11 w-full"
+  onClick={handleGoogleLogin}
+>
+  <FcGoogle className="mr-2 h-5 w-5" />
+  Continue with Google
+</Button>
             <Button className="h-11 w-full" type="submit" disabled={loading}>
               {loading ? (
                 <>

@@ -12,25 +12,36 @@ const db = client.db();
 
 export const auth = betterAuth({
   database: mongodbAdapter(db),
+
   emailAndPassword: {
     enabled: true,
   },
+
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    },
+  },
 });
 
-export async function getSession(){
-  const result = await auth.api.getSession({
-    headers:await headers()
-  })
-  return result
+export async function getSession() {
+  return await auth.api.getSession({
+    headers: await headers(),
+  });
 }
 
-export async function SignOut(){
+export async function SignOut() {
   const result = await auth.api.signOut({
-    headers:await headers()
-  })
+    headers: await headers(),
+  });
 
-  if(result.success){
-    redirect('/sign-in')
-
+  if (result.success) {
+    redirect("/sign-in");
   }
 }
