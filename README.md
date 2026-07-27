@@ -45,8 +45,8 @@ A modern authentication starter built with **Next.js**, **Better Auth**, and **M
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/your-repository.git
-cd your-repository
+git clone https://github.com/wasselessalah/nextjs-better-auth.git
+cd nextjs-better-auth
 ```
 
 ### 2. Install dependencies
