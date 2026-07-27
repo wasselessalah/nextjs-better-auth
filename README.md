@@ -1,6 +1,4 @@
-# E-Learning Platform
 
-A modern, scalable, and maintainable E-Learning platform built with **Next.js**, **TypeScript**, and **Tailwind CSS**.
 
 ##  Tech Stack
 

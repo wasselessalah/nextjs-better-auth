@@ -13,6 +13,9 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import {signUp} from '@/lib/auth/auth-client'
+import { useRouter } from "next/navigation";
+
 
 export default function SignIn() {
   const [name, setName] = useState("");
@@ -22,6 +25,7 @@ export default function SignIn() {
   const [error, setError] = useState("");
 
 
+  const router= useRouter()
   async function handleSubmit(e:React.FormEvent){
     e.preventDefault();
 
@@ -29,8 +33,20 @@ export default function SignIn() {
     setLoding(true)
 
     try {
+    const result=  await signUp.email({
+        name,
+        email,
+        password
+      })
+
+      if(result.error){
+              setError(result.error.message||"Failed to sign up")
+
+      }else{
+        router.push('/dashboard')
+      }
     } catch  {
-      setError("Unexpected error occurred ")
+      setError("Failed to sign up")
     }finally{
       setLoding(false)
     }
@@ -42,6 +58,7 @@ export default function SignIn() {
           <CardTitle className="text-3xl font-bold tracking-tight">
             Sign Up
           </CardTitle>
+
           <CardDescription className="text-muted-foreground">
             Create your account and get started.
           </CardDescription>
@@ -49,6 +66,11 @@ export default function SignIn() {
 
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-5">
+                      {error && (
+  <div className="w-full rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+    {error}
+  </div>
+)}
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
               <Input
