@@ -1,110 +1,154 @@
+# Better Auth + Next.js + MongoDB
 
+A modern authentication starter built with **Next.js**, **Better Auth**, and **MongoDB**. This project provides a clean foundation for implementing secure authentication with email/password and social providers.
 
-##  Tech Stack
+## ✨ Features
 
-- Next.js (App Router)
-- TypeScript
-- Tailwind CSS
-- React
-- ESLint
-- Prettier
+- 🔐 Better Auth integration
+- 👤 Email & Password authentication
+- 🌐 Social authentication (Google, GitHub, etc.)
+- 🍪 Secure session management
+- 🗄️ MongoDB database adapter
+- ⚡ Next.js App Router
+- 📘 TypeScript support
+- 🎨 Tailwind CSS
+- 📱 Responsive UI
+- 🛡️ Secure authentication flow
 
-## 📁 Project Structure
+## 🛠️ Tech Stack
 
+- **Framework:** Next.js
+- **Language:** TypeScript
+- **Authentication:** Better Auth
+- **Database:** MongoDB
+- **Styling:** Tailwind CSS
+- **Package Manager:** npm
+
+## 📂 Project Structure
+
+```text
+.
+├── src
+│   ├── app
+│   ├── components
+│   ├── lib
+│   ├── server
+│   └── types
+├── public
+├── .env.local
+├── package.json
+└── README.md
 ```
-src/
-├── app/                # App Router (pages, layouts, API routes)
-├── assets/             # Images, icons, fonts
-├── components/         # Reusable UI components
-│   ├── common/
-│   ├── forms/
-│   ├── layout/
-│   ├── shared/
-│   └── ui/
-├── config/             # Application configuration
-├── constants/          # Global constants
-├── features/           # Feature-based modules
-├── hooks/              # Custom React hooks
-├── lib/                # Library configurations
-├── middleware/         # Middleware helpers
-├── providers/          # React providers
-├── services/           # API services
-├── store/              # Global state management
-├── styles/             # Global styles
-├── types/              # TypeScript types
-└── utils/              # Utility functions
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/your-repository.git
+cd your-repository
 ```
 
-## ⚙️ Getting Started
-
-### Install dependencies
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### Start the development server
+### 3. Configure environment variables
+
+Create a `.env.local` file.
+
+```env
+MONGODB_URI=your_mongodb_connection_string
+
+BETTER_AUTH_SECRET=your_secret_key
+BETTER_AUTH_URL=http://localhost:3000
+
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+```
+
+### 4. Run the development server
 
 ```bash
 npm run dev
 ```
 
-Open your browser and visit:
+Visit:
 
 ```
 http://localhost:3000
 ```
 
-## 📜 Available Scripts
+## 📦 Scripts
 
 ```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run start    # Start production server
-npm run lint     # Run ESLint
+npm run dev       # Start development server
+npm run build     # Build for production
+npm run start     # Start production server
+npm run lint      # Run ESLint
 ```
 
-## 🌿 Git Workflow
+## 🔑 Authentication
 
-Create a new branch:
+This project supports:
 
-```bash
-git checkout -b feature/your-feature
-```
+- Email & Password
+- Google OAuth
+- GitHub OAuth
+- Session Management
+- Protected Routes
+- User Registration
+- User Login
+- User Logout
 
-Commit changes:
+## 📁 Environment Variables
 
-```bash
-git commit -m "feat: add authentication"
-```
+| Variable | Description |
+|----------|-------------|
+| `MONGODB_URI` | MongoDB connection string |
+| `BETTER_AUTH_SECRET` | Better Auth secret key |
+| `BETTER_AUTH_URL` | Application URL |
+| `GOOGLE_CLIENT_ID` | Google OAuth Client ID |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret |
+| `GITHUB_CLIENT_ID` | GitHub OAuth Client ID |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth Client Secret |
 
-Push your branch:
+## 🚀 Deployment
 
-```bash
-git push origin feature/your-feature
-```
+This project can be deployed to:
 
-## 📂 Architecture
+- Vercel
+- Netlify
+- Railway
+- Render
+- Docker
+- Any Node.js hosting provider
 
-The project follows a **feature-based architecture**.
+## 📚 Resources
 
-- `app/` → Routing and layouts
-- `features/` → Business logic
-- `components/` → Shared UI
-- `services/` → API communication
-- `store/` → Global state
-- `utils/` → Helper functions
-- `types/` → Shared TypeScript types
+- Better Auth Documentation
+- Next.js Documentation
+- MongoDB Documentation
+- Tailwind CSS Documentation
 
-## 📝 Code Style
+## 🤝 Contributing
 
-- Use TypeScript.
-- Prefer Server Components when possible.
-- Keep components small and reusable.
-- Group business logic inside `features/`.
-- Avoid duplicated code.
-- Follow ESLint rules.
+Contributions are welcome!
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Open a Pull Request.
 
 ## 📄 License
 
 This project is licensed under the MIT License.
+
+---
+
+Made with ❤️ using Next.js, Better Auth, and MongoDB.
