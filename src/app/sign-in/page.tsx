@@ -10,8 +10,10 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { signIn } from "@/lib/auth/auth-client";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SignIn() {
@@ -20,21 +22,29 @@ export default function SignIn() {
 
   const [loading, setLoding] = useState(false);
   const [error, setError] = useState("");
-  
 
+  const router = useRouter();
 
-  async function handleSubmit(e:React.FormEvent){
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    setError("")
-    setLoding(true)
+    setError("");
+    setLoding(true);
 
     try {
-      
-    } catch  {
-      setError("Unexpected error occurred ")
-    }finally{
-      setLoding(false)
+      const result = await signIn.email({
+        email,
+        password,
+      });
+      if (result.error) {
+        setError(result.error.message || "Invalid email or password");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch {
+      setError("Unexpected error occurred ");
+    } finally {
+      setLoding(false);
     }
   }
   return (
@@ -51,6 +61,11 @@ export default function SignIn() {
 
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-5">
+            {error && (
+              <div className="w-full rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                {error}
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -80,20 +95,16 @@ export default function SignIn() {
           </CardContent>
 
           <CardFooter className="flex flex-col gap-4">
-            <Button
-  className="h-11 w-full"
-  type="submit"
-  disabled={loading}
->
-  {loading ? (
-    <>
-      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-      Signing in...
-    </>
-  ) : (
-    "Sign In"
-  )}
-</Button>
+            <Button className="h-11 w-full" type="submit" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                "Sign In"
+              )}
+            </Button>
 
             <p className="text-center text-sm text-muted-foreground">
               Dont have an account? Create one.
