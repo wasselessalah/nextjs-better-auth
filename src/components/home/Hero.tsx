@@ -31,15 +31,12 @@ export default function Hero() {
           <Button size="lg" variant="ghost">
             <Link href="/sign-in">Access Account</Link>
           </Button>
-
-          <Button size="lg">
-            <Link
-              href="/sign-up"
-              className="group inline-flex items-center gap-2">
+          <Link href="/sign-up">
+            <Button size="lg" className="group inline-flex items-center gap-2">
               Get Started
               <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         </div>
       </div>
     </>
