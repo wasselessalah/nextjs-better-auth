@@ -15,13 +15,16 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [loading, setLoding] = useState(false);
+  const [loadingProvider, setLoadingProvider] = useState<
+    "email" | "google" | "github" | null
+  >(null);
   const [error, setError] = useState("");
 
   const router = useRouter();
@@ -30,8 +33,7 @@ export default function SignIn() {
     e.preventDefault();
 
     setError("");
-    setLoding(true);
-
+    setLoadingProvider("email");
     try {
       const result = await signIn.email({
         email,
@@ -45,22 +47,40 @@ export default function SignIn() {
     } catch {
       setError("Unexpected error occurred ");
     } finally {
-      setLoding(false);
+      setLoadingProvider(null);
     }
   }
 
   async function handleGoogleLogin() {
-  setError("");
+    setError("");
+    setLoadingProvider("google");
 
-  try {
-    await signIn.social({
-      provider: "google",
-      callbackURL: "/dashboard",
-    });
-  } catch {
-    setError("Failed to continue with Google.");
+    try {
+      await signIn.social({
+        provider: "google",
+        callbackURL: "/dashboard",
+      });
+    } catch {
+      setError("Failed to continue with Google.");
+    }
   }
-}
+
+  async function handleGithubLogin() {
+    setError("");
+    setLoadingProvider("github");
+
+    try {
+      await signIn.social({
+        provider: "github",
+        callbackURL: "/dashboard",
+      });
+    } catch {
+      setError("Failed to continue with GitHub.");
+    } finally {
+      setLoadingProvider(null);
+    }
+  }
+
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4">
       <Card className="w-full max-w-md border-border/50 shadow-xl">
@@ -110,22 +130,63 @@ export default function SignIn() {
 
           <CardFooter className="flex flex-col gap-4">
             <Button
-  type="button"
-  variant="outline"
-  className="h-11 w-full"
-  onClick={handleGoogleLogin}
->
-  <FcGoogle className="mr-2 h-5 w-5" />
-  Continue with Google
-</Button>
-            <Button className="h-11 w-full" type="submit" disabled={loading}>
-              {loading ? (
+              className="h-11 w-full"
+              type="submit"
+              disabled={loadingProvider !== null}>
+              {loadingProvider === "email" ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Signing in...
                 </>
               ) : (
                 "Sign In"
+              )}
+            </Button>
+            <div className="relative w-full">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-11 w-full"
+              onClick={handleGoogleLogin}
+              disabled={loadingProvider !== null}>
+              {loadingProvider === "google" ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Connecting...
+                </>
+              ) : (
+                <>
+                  <FcGoogle className="mr-2 h-5 w-5" />
+                  Continue with Google
+                </>
+              )}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-11 w-full"
+              onClick={handleGithubLogin}
+              disabled={loadingProvider !== null}>
+              {loadingProvider === "github" ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Connecting...
+                </>
+              ) : (
+                <>
+                  <FaGithub className="mr-2 h-5 w-5" />
+                  Continue with GitHub
+                </>
               )}
             </Button>
 

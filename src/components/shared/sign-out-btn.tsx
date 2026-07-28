@@ -5,27 +5,27 @@ import { useRouter } from "next/navigation";
 import { Loader2, LogOut } from "lucide-react";
 
 import { signOut } from "@/lib/auth/auth-client";
-import { DropdownMenuItem } from "../ui/dropdown-menu";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
-export default function SignOutButton() {
+export default function LogoutMenuItem() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  async function handleSignOut() {
+  async function handleLogout() {
+    if (loading) return;
+
     setLoading(true);
 
     try {
-      const result = await signOut();
+      const { error } = await signOut();
 
-      if (result.error) {
-        alert(result.error.message || "Failed to sign out.");
+      if (error) {
+        console.error(error);
         return;
       }
 
-      router.push("/sign-in");
+      router.replace("/sign-in");
       router.refresh();
-    } catch {
-      alert("An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
@@ -33,12 +33,12 @@ export default function SignOutButton() {
 
   return (
     <DropdownMenuItem
-      onSelect={(e) => {
-        e.preventDefault();
-        handleSignOut();
-      }}
       disabled={loading}
-      className="cursor-pointer text-destructive focus:text-destructive"
+      onClick={(e) => {
+        e.preventDefault();
+        handleLogout();
+      }}
+      className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
     >
       {loading ? (
         <>
@@ -48,7 +48,7 @@ export default function SignOutButton() {
       ) : (
         <>
           <LogOut className="mr-2 h-4 w-4" />
-          Log Out
+          Sign out
         </>
       )}
     </DropdownMenuItem>
