@@ -29,28 +29,76 @@ export default function SignIn() {
 
   const router = useRouter();
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  // async function handleSubmit(e: React.FormEvent) {
+  //   e.preventDefault();
 
-    setError("");
-    setLoadingProvider("email");
-    try {
-      const result = await signIn.email({
-        email,
-        password,
-      });
-      if (result.error) {
-        setError(result.error.message || "Invalid email or password");
-      } else {
-        router.push("/dashboard");
-      }
-    } catch {
-      setError("Unexpected error occurred ");
-    } finally {
-      setLoadingProvider(null);
+  //   setError("");
+  //   setLoadingProvider("email");
+  //   try {
+  //     const result = await signIn.email({
+  //       email,
+  //       password,
+  //     });
+  //     if (result.error) {
+  //       setError(result.error.message || "Invalid email or password");
+  //     } else {
+  //       router.push("/dashboard");
+  //     }
+  //   } catch {
+  //     setError("Unexpected error occurred ");
+  //   } finally {
+  //     setLoadingProvider(null);
+  //   }
+  // }
+async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
+
+  setError("");
+  setLoadingProvider("email");
+
+  try {
+    const result = await signIn.email({
+      email,
+      password,
+    });
+
+    if (result.error) {
+      setError(result.error.message || "Invalid email or password");
+      return;
     }
-  }
 
+    const user = result.data?.user;
+
+    if (!user) {
+      setError("Unable to retrieve user session.");
+      return;
+    }
+
+    if (!user.emailVerified) {
+      await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: user.email,
+        }),
+      });
+
+      router.replace(
+        `/verify-email?email=${encodeURIComponent(user.email)}`
+      );
+
+      return;
+    }
+
+    router.replace("/dashboard");
+  } catch {
+    setError("Unexpected error occurred.");
+  } finally {
+    setLoadingProvider(null);
+  }
+}
   async function handleGoogleLogin() {
     setError("");
     setLoadingProvider("google");

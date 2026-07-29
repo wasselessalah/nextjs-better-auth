@@ -35,6 +35,7 @@ export default function SignIn() {
     setLoadingProvider("email");
 
     try {
+      // Create account
       const result = await signUp.email({
         name,
         email,
@@ -42,18 +43,33 @@ export default function SignIn() {
       });
 
       if (result.error) {
-        setError(result.error.message || "Failed to sign up");
-      } else {
-        router.push("/dashboard");
+        setError(result.error.message || "Failed to sign up.");
+        return;
       }
-    } catch {
-      setError("Failed to sign up");
+
+      // Send verification email
+      const response = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Failed to send verification email.");
+        return;
+      }
+
+router.push(`/verify-email?email=${encodeURIComponent(email)}`);    } catch (error) {
+      console.error(error);
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoadingProvider(null);
     }
   }
-
-
 
   async function handleGoogleLogin() {
     setError("");
@@ -84,7 +100,6 @@ export default function SignIn() {
       setLoadingProvider(null);
     }
   }
-
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4">
@@ -148,8 +163,11 @@ export default function SignIn() {
           </CardContent>
 
           <CardFooter className="flex flex-col gap-4">
-            <Button className="h-11 w-full" type="submit" disabled={loadingProvider === "email" }>
-            {loadingProvider === "email" ? (
+            <Button
+              className="h-11 w-full"
+              type="submit"
+              disabled={loadingProvider === "email"}>
+              {loadingProvider === "email" ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Signing up...
