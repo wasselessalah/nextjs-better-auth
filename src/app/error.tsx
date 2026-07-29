@@ -31,7 +31,7 @@ export default function Error({
         </h1>
 
         <p className="mt-4 text-muted-foreground">
-          We couldn't complete your request. This may be a temporary issue.
+          We couldn t complete your request. This may be a temporary issue.
           Please try again, or return to the homepage.
         </p>
 
