@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
 } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
@@ -17,15 +17,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 
-export default function ResetPasswordPage() {
+export default function ForgotPasswordPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const email = searchParams.get("email") || "";
-
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
@@ -36,47 +31,32 @@ export default function ResetPasswordPage() {
 
     setError("");
     setSuccess("");
-
-    if (!email) {
-      setError("Missing email.");
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
     setLoading(true);
 
     try {
-      const response = await fetch("/api/auth/reset-password", {
+      const response = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email,
-          password,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || "Failed to reset password.");
+        setError(data.message || "Failed to send reset code.");
         return;
       }
 
-      setSuccess("Password updated successfully.");
+      setSuccess("A reset code has been sent to your email.");
 
       setTimeout(() => {
-        router.replace("/sign-in");
+        router.push(
+          `/verify-reset-password?email=${encodeURIComponent(email)}`
+        );
       }, 1500);
     } catch {
       setError("Something went wrong.");
@@ -90,11 +70,12 @@ export default function ResetPasswordPage() {
       <Card className="w-full max-w-md border-border/50 shadow-xl">
         <CardHeader className="space-y-2 text-center">
           <CardTitle className="text-3xl font-bold">
-            Reset Password
+            Forgot Password
           </CardTitle>
 
           <CardDescription>
-            Enter your new password below.
+            Enter your email address and we ll send you a verification code to
+            reset your password.
           </CardDescription>
         </CardHeader>
 
@@ -113,52 +94,22 @@ export default function ResetPasswordPage() {
             )}
 
             <div className="space-y-2">
-              <Label>Email</Label>
+              <Label htmlFor="email">
+                Email Address
+              </Label>
 
               <Input
+                id="email"
+                type="email"
+                placeholder="wassel@gmail.com"
                 value={email}
-                disabled
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">
-                New Password
-              </Label>
-
-              <Input
-                id="password"
-                type="password"
-                minLength={8}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) =>
-                  setPassword(e.target.value)
-                }
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">
-                Confirm Password
-              </Label>
-
-              <Input
-                id="confirmPassword"
-                type="password"
-                minLength={8}
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) =>
-                  setConfirmPassword(e.target.value)
-                }
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
           </CardContent>
 
-          <CardFooter>
+          <CardFooter className="flex flex-col gap-4">
             <Button
               type="submit"
               className="w-full"
@@ -167,11 +118,20 @@ export default function ResetPasswordPage() {
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating...
+                  Sending...
                 </>
               ) : (
-                "Update Password"
+                "Send Reset Code"
               )}
+            </Button>
+
+            <Button
+              type="button"
+              variant="ghost"
+              className="w-full"
+              onClick={() => router.push("/sign-in")}
+            >
+              Back to Sign In
             </Button>
           </CardFooter>
         </form>

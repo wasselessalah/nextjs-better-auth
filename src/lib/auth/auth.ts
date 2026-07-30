@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { connectDB } from "@/lib/db";
+import { sendResetPasswordEmail } from "../email/reset-password";
 
 const db = await connectDB();
 
@@ -12,6 +13,9 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
+     async sendResetPassword({ user, url }) {
+    await sendResetPasswordEmail(user.email, url);
+  },
   },
 
   socialProviders: {

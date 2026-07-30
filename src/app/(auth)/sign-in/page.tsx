@@ -50,55 +50,53 @@ export default function SignIn() {
   //     setLoadingProvider(null);
   //   }
   // }
-async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
 
-  setError("");
-  setLoadingProvider("email");
+    setError("");
+    setLoadingProvider("email");
 
-  try {
-    const result = await signIn.email({
-      email,
-      password,
-    });
-
-    if (result.error) {
-      setError(result.error.message || "Invalid email or password");
-      return;
-    }
-
-    const user = result.data?.user;
-
-    if (!user) {
-      setError("Unable to retrieve user session.");
-      return;
-    }
-
-    if (!user.emailVerified) {
-      await fetch("/api/auth/resend-verification", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: user.email,
-        }),
+    try {
+      const result = await signIn.email({
+        email,
+        password,
       });
 
-      router.replace(
-        `/verify-email?email=${encodeURIComponent(user.email)}`
-      );
+      if (result.error) {
+        setError(result.error.message || "Invalid email or password");
+        return;
+      }
 
-      return;
+      const user = result.data?.user;
+
+      if (!user) {
+        setError("Unable to retrieve user session.");
+        return;
+      }
+
+      if (!user.emailVerified) {
+        await fetch("/api/auth/resend-verification", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: user.email,
+          }),
+        });
+
+        router.replace(`/verify-email?email=${encodeURIComponent(user.email)}`);
+
+        return;
+      }
+
+      router.replace("/dashboard");
+    } catch {
+      setError("Unexpected error occurred.");
+    } finally {
+      setLoadingProvider(null);
     }
-
-    router.replace("/dashboard");
-  } catch {
-    setError("Unexpected error occurred.");
-  } finally {
-    setLoadingProvider(null);
   }
-}
   async function handleGoogleLogin() {
     setError("");
     setLoadingProvider("google");
@@ -190,6 +188,13 @@ async function handleSubmit(e: React.FormEvent) {
                 "Sign In"
               )}
             </Button>
+            <div className="flex  w-full justify-end">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-primary hover:underline">
+                Forgot password?
+              </Link>
+            </div>
             <div className="relative w-full">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
