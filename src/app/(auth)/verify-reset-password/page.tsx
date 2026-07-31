@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 
 import {
   Card,
@@ -23,17 +23,79 @@ export default function VerifyResetPasswordPage() {
 
   const email = searchParams.get("email") || "";
 
-  const [otp, setOtp] = useState("");
-
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState("");
+
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const otpValue = otp.join("");
+
+  const handleChange = (index: number, value: string) => {
+    const digit = value.replace(/\D/g, "").slice(-1);
+
+    const newOtp = [...otp];
+    newOtp[index] = digit;
+
+    setOtp(newOtp);
+
+    if (error) setError("");
+
+    if (digit && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Backspace") {
+      if (otp[index]) {
+        const newOtp = [...otp];
+        newOtp[index] = "";
+        setOtp(newOtp);
+      } else if (index > 0) {
+        inputRefs.current[index - 1]?.focus();
+
+        const newOtp = [...otp];
+        newOtp[index - 1] = "";
+        setOtp(newOtp);
+      }
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    const pasted = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
+
+    if (!pasted) return;
+
+    const newOtp = [...otp];
+
+    pasted.split("").forEach((digit, index) => {
+      newOtp[index] = digit;
+    });
+
+    setOtp(newOtp);
+
+    inputRefs.current[Math.min(pasted.length - 1, 5)]?.focus();
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    setError("");
+    if (otpValue.length !== 6) {
+      setError("Please enter the 6-digit verification code.");
+      return;
+    }
+
     setLoading(true);
+    setError("");
 
     try {
       const response = await fetch("/api/auth/verify-reset-password", {
@@ -43,7 +105,7 @@ export default function VerifyResetPasswordPage() {
         },
         body: JSON.stringify({
           email,
-          otp,
+          otp: otpValue,
         }),
       });
 
@@ -58,7 +120,7 @@ export default function VerifyResetPasswordPage() {
         `/reset-password?email=${encodeURIComponent(email)}`
       );
     } catch {
-      setError("Something went wrong.");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -66,55 +128,72 @@ export default function VerifyResetPasswordPage() {
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4">
-      <Card className="w-full max-w-md border-border/50 shadow-xl">
-        <CardHeader className="space-y-2 text-center">
+      <Card className="w-full max-w-md shadow-xl">
+        <CardHeader className="space-y-3 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <Mail className="h-6 w-6 text-primary" />
+          </div>
+
           <CardTitle className="text-3xl font-bold">
-            Verify Code
+            Verify Reset Code
           </CardTitle>
 
           <CardDescription>
-            Enter the 6-digit code sent to your email.
+            Enter the verification code sent to
+            <br />
+            <span className="font-medium text-foreground">
+              {email}
+            </span>
           </CardDescription>
         </CardHeader>
 
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-5">
+          <CardContent className="space-y-6">
             {error && (
-              <div className="rounded-md border border-red-300 bg-red-100 px-3 py-2 text-sm text-red-700">
+              <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-center text-sm text-destructive">
                 {error}
               </div>
             )}
 
-            <div className="space-y-2">
-              <Label>Email</Label>
-
-              <Input
-                value={email}
-                disabled
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="otp">
+            <div className="space-y-3">
+              <Label className="text-center block">
                 Verification Code
               </Label>
 
-              <Input
-                id="otp"
-                placeholder="123456"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                maxLength={6}
-                required
-              />
+              <div className="flex justify-center gap-2">
+                {otp.map((digit, index) => (
+                  <Input
+                    key={index}
+                    ref={(el) => {
+                      inputRefs.current[index] = el;
+                    }}
+                    value={digit}
+                    onChange={(e) =>
+                      handleChange(index, e.target.value)
+                    }
+                    onKeyDown={(e) =>
+                      handleKeyDown(index, e)
+                    }
+                    onPaste={handlePaste}
+                    maxLength={1}
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    className="h-12 w-12 text-center text-lg font-semibold"
+                  />
+                ))}
+              </div>
+
+              <p className="text-center text-xs text-muted-foreground">
+                Enter the 6-digit code from your email.
+              </p>
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col gap-4">
+          <CardFooter className="flex flex-col gap-3">
             <Button
               type="submit"
               className="w-full"
-              disabled={loading}
+              disabled={loading || otpValue.length !== 6}
             >
               {loading ? (
                 <>
@@ -130,9 +209,8 @@ export default function VerifyResetPasswordPage() {
               type="button"
               variant="ghost"
               className="w-full"
-              onClick={() =>
-                router.push("/forgot-password")
-              }
+              disabled={loading}
+              onClick={() => router.push("/forgot-password")}
             >
               Back
             </Button>

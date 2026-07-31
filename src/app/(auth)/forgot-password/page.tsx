@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2, MailCheck, AlertCircle } from "lucide-react";
 
 import {
   Card,
@@ -15,7 +16,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -25,6 +25,17 @@ export default function ForgotPasswordPage() {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  function maskEmail(email: string) {
+    const [name, domain] = email.split("@");
+
+    if (!name || !domain) return email;
+
+    const visible = name.slice(0, 2);
+    const hidden = "*".repeat(Math.max(name.length - 2, 2));
+
+    return `${visible}${hidden}@${domain}`;
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -47,19 +58,23 @@ export default function ForgotPasswordPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || "Failed to send reset code.");
+        setError(data.message || "Failed to send verification code.");
         return;
       }
 
-      setSuccess("A reset code has been sent to your email.");
+      setSuccess(
+        `We've sent a 6-digit verification code to ${maskEmail(
+          email
+        )}. Please check your inbox and spam folder.`
+      );
 
       setTimeout(() => {
         router.push(
           `/verify-reset-password?email=${encodeURIComponent(email)}`
         );
-      }, 1500);
+      }, 2000);
     } catch {
-      setError("Something went wrong.");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -67,29 +82,51 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4">
-      <Card className="w-full max-w-md border-border/50 shadow-xl">
-        <CardHeader className="space-y-2 text-center">
-          <CardTitle className="text-3xl font-bold">
-            Forgot Password
-          </CardTitle>
+      <Card className="w-full max-w-md shadow-xl">
+        <CardHeader className="space-y-4 text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+            <MailCheck className="h-7 w-7 text-primary" />
+          </div>
 
-          <CardDescription>
-            Enter your email address and we ll send you a verification code to
-            reset your password.
-          </CardDescription>
+          <div>
+            <CardTitle className="text-3xl font-bold">
+              Forgot Password
+            </CardTitle>
+
+            <CardDescription className="mt-2">
+              Enter your email address and we ll send you a
+              verification code to reset your password.
+            </CardDescription>
+          </div>
         </CardHeader>
 
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-5">
             {error && (
-              <div className="rounded-md border border-red-300 bg-red-100 px-3 py-2 text-sm text-red-700">
-                {error}
+              <div className="flex items-start gap-2 rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+
+                <span>{error}</span>
               </div>
             )}
 
             {success && (
-              <div className="rounded-md border border-green-300 bg-green-100 px-3 py-2 text-sm text-green-700">
-                {success}
+              <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-4">
+                <div className="flex items-center gap-2">
+                  <MailCheck className="h-5 w-5 text-green-600" />
+
+                  <p className="font-medium text-green-700">
+                    Verification Code Sent
+                  </p>
+                </div>
+
+                <p className="mt-2 text-sm text-green-700">
+                  {success}
+                </p>
+
+                <p className="mt-2 text-xs text-green-600">
+                  Redirecting to the verification page...
+                </p>
               </div>
             )}
 
@@ -102,26 +139,32 @@ export default function ForgotPasswordPage() {
                 id="email"
                 type="email"
                 placeholder="wassel@gmail.com"
+                autoComplete="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+
+                  if (error) setError("");
+                }}
+                disabled={loading}
                 required
               />
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col gap-4">
+          <CardFooter className="flex flex-col gap-3">
             <Button
               type="submit"
               className="w-full"
-              disabled={loading}
+              disabled={loading || !email.trim()}
             >
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Sending...
+                  Sending Verification Code...
                 </>
               ) : (
-                "Send Reset Code"
+                "Send Verification Code"
               )}
             </Button>
 
@@ -129,6 +172,7 @@ export default function ForgotPasswordPage() {
               type="button"
               variant="ghost"
               className="w-full"
+              disabled={loading}
               onClick={() => router.push("/sign-in")}
             >
               Back to Sign In
