@@ -1,17 +1,22 @@
 "use client";
+
 import Link from "next/link";
+import { Settings } from "lucide-react";
+
+import { useSession } from "@/lib/auth/auth-client";
+
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import SignOutButton from "../shared/sign-out-btn";
-import { useSession } from "@/lib/auth/auth-client";
 
 function Navbar() {
   const { data: session } = useSession();
@@ -22,7 +27,8 @@ function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className="text-xl font-bold tracking-tight transition-colors hover:text-primary">
+          className="text-xl font-bold tracking-tight transition-colors hover:text-primary"
+        >
           Auth
         </Link>
 
@@ -37,13 +43,14 @@ function Navbar() {
               </Link>
 
               <DropdownMenu>
-                <DropdownMenuTrigger>
+                <DropdownMenuTrigger >
                   <Button
                     variant="ghost"
-                    className="h-10 w-10 rounded-full p-0 transition-all hover:bg-accent hover:scale-105">
+                    className="h-10 w-10 rounded-full p-0 transition-all hover:scale-105 hover:bg-accent"
+                  >
                     <Avatar className="h-9 w-9 border border-border shadow-sm">
                       <AvatarFallback className="bg-primary font-semibold text-primary-foreground">
-                        {session.user.name[0].toUpperCase()}
+                        {session.user.name.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -51,17 +58,18 @@ function Navbar() {
 
                 <DropdownMenuContent
                   align="end"
-                  className="w-64 rounded-xl border border-border/60 p-2 shadow-xl">
+                  className="w-64 rounded-xl border border-border/60 p-2 shadow-xl"
+                >
                   <DropdownMenuGroup>
                     <DropdownMenuLabel className="p-0">
                       <div className="flex items-center gap-3 rounded-lg bg-muted/40 p-3">
                         <Avatar className="h-10 w-10">
                           <AvatarFallback className="bg-primary font-semibold text-primary-foreground">
-                            {session.user.name[0].toUpperCase()}
+                            {session.user.name.charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
 
-                        <div className="flex min-w-0 flex-col">
+                        <div className="min-w-0 flex-1">
                           <p className="truncate text-sm font-semibold">
                             {session.user.name}
                           </p>
@@ -71,6 +79,15 @@ function Navbar() {
                         </div>
                       </div>
                     </DropdownMenuLabel>
+
+                    <DropdownMenuSeparator className="my-2" />
+
+                    <Link href="/settings">
+                      <DropdownMenuItem className="cursor-pointer rounded-lg">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                      </DropdownMenuItem>
+                    </Link>
 
                     <DropdownMenuSeparator className="my-2" />
 
