@@ -4,12 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { FaGithub } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
 
 import { emailSignIn } from "@/actions/auth/sign-in/email-sign-in";
-import { googleSignIn } from "@/actions/auth/sign-in/google-sign-in";
-import { githubSignIn } from "@/actions/auth/sign-in/github-sign-in";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +18,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SocialAuthButtons } from "@/components/auth/social-auth-buttons";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -61,39 +58,7 @@ export default function SignInPage() {
     }
   }
 
-  async function handleGoogleLogin() {
-    setError("");
-    setLoadingProvider("google");
 
-    try {
-      await googleSignIn();
-    } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Failed to continue with Google."
-      );
-
-      setLoadingProvider(null);
-    }
-  }
-
-  async function handleGithubLogin() {
-    setError("");
-    setLoadingProvider("github");
-
-    try {
-      await githubSignIn();
-    } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Failed to continue with GitHub."
-      );
-
-      setLoadingProvider(null);
-    }
-  }
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4">
@@ -104,8 +69,7 @@ export default function SignInPage() {
           </CardTitle>
 
           <CardDescription>
-            Sign in to access your account and continue where
-            you left off.
+            Sign in to access your account and continue where you left off.
           </CardDescription>
         </CardHeader>
 
@@ -164,11 +128,8 @@ export default function SignInPage() {
               type="submit"
               className="h-11 w-full"
               disabled={
-                loadingProvider !== null ||
-                !email.trim() ||
-                !password.trim()
-              }
-            >
+                loadingProvider !== null || !email.trim() || !password.trim()
+              }>
               {loadingProvider === "email" ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -182,70 +143,18 @@ export default function SignInPage() {
             <div className="flex w-full justify-end">
               <Link
                 href="/forgot-password"
-                className="text-sm text-primary hover:underline"
-              >
+                className="text-sm text-primary hover:underline">
                 Forgot password?
               </Link>
             </div>
 
-            <div className="relative w-full">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="h-11 w-full"
-              disabled={loadingProvider !== null}
-              onClick={handleGoogleLogin}
-            >
-              {loadingProvider === "google" ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Connecting...
-                </>
-              ) : (
-                <>
-                  <FcGoogle className="mr-2 h-5 w-5" />
-                  Continue with Google
-                </>
-              )}
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="h-11 w-full"
-              disabled={loadingProvider !== null}
-              onClick={handleGithubLogin}
-            >
-              {loadingProvider === "github" ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Connecting...
-                </>
-              ) : (
-                <>
-                  <FaGithub className="mr-2 h-5 w-5" />
-                  Continue with GitHub
-                </>
-              )}
-            </Button>
+            <SocialAuthButtons mode="sign-in" onError={setError} />
 
             <p className="text-center text-sm text-muted-foreground">
               Don t have an account?{" "}
               <Link
                 href="/sign-up"
-                className="font-medium text-primary hover:underline"
-              >
+                className="font-medium text-primary hover:underline">
                 Create one
               </Link>
             </p>

@@ -14,9 +14,8 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn, signUp } from "@/lib/auth/auth-client";
-import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
+import { emailSignUp } from "@/actions/auth/sign-up/email-sign-up";
+import { SocialAuthButtons } from "@/components/auth/social-auth-buttons";
 
 export default function SignIn() {
   const [name, setName] = useState("");
@@ -28,74 +27,26 @@ export default function SignIn() {
   const [error, setError] = useState("");
 
   const router = useRouter();
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     setError("");
     setLoadingProvider("email");
 
     try {
-      // Create account
-      const result = await signUp.email({
+      const { redirectTo } = await emailSignUp({
         name,
         email,
         password,
       });
 
-      if (result.error) {
-        setError(result.error.message || "Failed to sign up.");
-        return;
-      }
-
-      // Send verification email
-      const response = await fetch("/api/auth/resend-verification", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || "Failed to send verification email.");
-        return;
-      }
-
-router.push(`/verify-email?email=${encodeURIComponent(email)}`);    } catch (error) {
-      console.error(error);
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setLoadingProvider(null);
-    }
-  }
-
-  async function handleGoogleLogin() {
-    setError("");
-    setLoadingProvider("google");
-
-    try {
-      await signIn.social({
-        provider: "google",
-        callbackURL: "/dashboard",
-      });
-    } catch {
-      setError("Failed to continue with Google.");
-    }
-  }
-
-  async function handleGithubLogin() {
-    setError("");
-    setLoadingProvider("github");
-
-    try {
-      await signIn.social({
-        provider: "github",
-        callbackURL: "/dashboard",
-      });
-    } catch {
-      setError("Failed to continue with GitHub.");
+      router.replace(redirectTo);
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again.",
+      );
     } finally {
       setLoadingProvider(null);
     }
@@ -177,54 +128,7 @@ router.push(`/verify-email?email=${encodeURIComponent(email)}`);    } catch (err
               )}
             </Button>
 
-            <div className="relative w-full">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="h-11 w-full"
-              onClick={handleGoogleLogin}
-              disabled={loadingProvider !== null}>
-              {loadingProvider === "google" ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Connecting...
-                </>
-              ) : (
-                <>
-                  <FcGoogle className="mr-2 h-5 w-5" />
-                  Continue with Google
-                </>
-              )}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="h-11 w-full"
-              onClick={handleGithubLogin}
-              disabled={loadingProvider !== null}>
-              {loadingProvider === "github" ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Connecting...
-                </>
-              ) : (
-                <>
-                  <FaGithub className="mr-2 h-5 w-5" />
-                  Continue with GitHub
-                </>
-              )}
-            </Button>
+            <SocialAuthButtons mode="sign-in" onError={setError} />
 
             <p className="text-center text-sm text-muted-foreground">
               Already have an account?{" "}
