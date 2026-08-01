@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, MailCheck, AlertCircle } from "lucide-react";
 
+import { forgotPassword } from "@/actions/auth/forgot-password/forgot-password";
+
 import {
   Card,
   CardHeader,
@@ -26,59 +28,34 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  function maskEmail(email: string) {
-    const [name, domain] = email.split("@");
+async function handleSubmit(
+  e: React.FormEvent<HTMLFormElement>
+) {
+  e.preventDefault();
 
-    if (!name || !domain) return email;
+  setLoading(true);
+  setError("");
+  setSuccess("");
 
-    const visible = name.slice(0, 2);
-    const hidden = "*".repeat(Math.max(name.length - 2, 2));
+  try {
+    const result = await forgotPassword(email);
 
-    return `${visible}${hidden}@${domain}`;
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    setError("");
-    setSuccess("");
-    setLoading(true);
-
-    try {
-      const response = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || "Failed to send verification code.");
-        return;
-      }
-
-      setSuccess(
-        `We've sent a 6-digit verification code to ${maskEmail(
-          email
-        )}. Please check your inbox and spam folder.`
-      );
-
-      setTimeout(() => {
-        router.push(
-          `/verify-reset-password?email=${encodeURIComponent(email)}`
-        );
-      }, 2000);
-    } catch {
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
+    if (!result.success) {
+      setError(result.message);
+      return;
     }
+
+    setSuccess(result.message);
+
+    setTimeout(() => {
+      router.push(
+        `/verify-reset-password?email=${encodeURIComponent(email)}`
+      );
+    }, 2000);
+  } finally {
+    setLoading(false);
   }
+}
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4">
@@ -105,7 +82,6 @@ export default function ForgotPasswordPage() {
             {error && (
               <div className="flex items-start gap-2 rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
                 <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-
                 <span>{error}</span>
               </div>
             )}
@@ -114,7 +90,6 @@ export default function ForgotPasswordPage() {
               <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-4">
                 <div className="flex items-center gap-2">
                   <MailCheck className="h-5 w-5 text-green-600" />
-
                   <p className="font-medium text-green-700">
                     Verification Code Sent
                   </p>
@@ -144,7 +119,9 @@ export default function ForgotPasswordPage() {
                 onChange={(e) => {
                   setEmail(e.target.value);
 
-                  if (error) setError("");
+                  if (error) {
+                    setError("");
+                  }
                 }}
                 disabled={loading}
                 required

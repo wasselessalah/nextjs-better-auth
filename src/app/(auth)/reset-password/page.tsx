@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { resetPassword } from "@/actions/auth/forgot-password/reset-password";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -72,63 +73,52 @@ export default function ResetPasswordPage() {
     password.length >= 8 &&
     password === confirmPassword;
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+async function handleSubmit(
+  e: React.FormEvent<HTMLFormElement>
+) {
+  e.preventDefault();
 
-    setError("");
-    setSuccess("");
+  setError("");
+  setSuccess("");
 
-    if (!token) {
-      setError("This password reset link is invalid or has expired.");
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const response = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token,
-          newPassword: password,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(
-          data.message || "Failed to reset your password."
-        );
-        return;
-      }
-
-      setSuccess(
-        "Your password has been updated successfully. Redirecting to sign in..."
-      );
-
-      setTimeout(() => {
-        router.replace("/sign-in");
-      }, 2000);
-    } catch {
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+  if (!token) {
+    setError("This password reset link is invalid or has expired.");
+    return;
   }
+
+  if (password.length < 8) {
+    setError("Password must be at least 8 characters.");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    setError("Passwords do not match.");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const message = await resetPassword({
+      token,
+      newPassword: password,
+    });
+
+    setSuccess(message);
+
+    setTimeout(() => {
+      router.replace("/sign-in");
+    }, 2000);
+  } catch (error) {
+    setError(
+      error instanceof Error
+        ? error.message
+        : "Something went wrong. Please try again."
+    );
+  } finally {
+    setLoading(false);
+  }
+}
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-10">
