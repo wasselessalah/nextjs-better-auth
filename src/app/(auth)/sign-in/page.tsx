@@ -1,113 +1,80 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import {
-  CardDescription,
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { signIn } from "@/lib/auth/auth-client";
-import { Loader2 } from "lucide-react";
+
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
-export default function SignIn() {
+import { emailSignIn } from "@/actions/auth/sign-in/email-sign-in";
+import { googleSignIn } from "@/actions/auth/sign-in/google-sign-in";
+import { githubSignIn } from "@/actions/auth/sign-in/github-sign-in";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+export default function SignInPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [error, setError] = useState("");
 
   const [loadingProvider, setLoadingProvider] = useState<
     "email" | "google" | "github" | null
   >(null);
-  const [error, setError] = useState("");
 
-  const router = useRouter();
-
-  // async function handleSubmit(e: React.FormEvent) {
-  //   e.preventDefault();
-
-  //   setError("");
-  //   setLoadingProvider("email");
-  //   try {
-  //     const result = await signIn.email({
-  //       email,
-  //       password,
-  //     });
-  //     if (result.error) {
-  //       setError(result.error.message || "Invalid email or password");
-  //     } else {
-  //       router.push("/dashboard");
-  //     }
-  //   } catch {
-  //     setError("Unexpected error occurred ");
-  //   } finally {
-  //     setLoadingProvider(null);
-  //   }
-  // }
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(
+    e: React.FormEvent<HTMLFormElement>
+  ) {
     e.preventDefault();
 
     setError("");
     setLoadingProvider("email");
 
     try {
-      const result = await signIn.email({
+      const { redirectTo } = await emailSignIn({
         email,
         password,
       });
 
-      if (result.error) {
-        setError(result.error.message || "Invalid email or password");
-        return;
-      }
-
-      const user = result.data?.user;
-
-      if (!user) {
-        setError("Unable to retrieve user session.");
-        return;
-      }
-
-      if (!user.emailVerified) {
-        await fetch("/api/auth/resend-verification", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: user.email,
-          }),
-        });
-
-        router.replace(`/verify-email?email=${encodeURIComponent(user.email)}`);
-
-        return;
-      }
-
-      router.replace("/dashboard");
-    } catch {
-      setError("Unexpected error occurred.");
+      router.replace(redirectTo);
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Unexpected error occurred."
+      );
     } finally {
       setLoadingProvider(null);
     }
   }
+
   async function handleGoogleLogin() {
     setError("");
     setLoadingProvider("google");
 
     try {
-      await signIn.social({
-        provider: "google",
-        callbackURL: "/dashboard",
-      });
-    } catch {
-      setError("Failed to continue with Google.");
+      await googleSignIn();
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to continue with Google."
+      );
+
+      setLoadingProvider(null);
     }
   }
 
@@ -116,13 +83,14 @@ export default function SignIn() {
     setLoadingProvider("github");
 
     try {
-      await signIn.social({
-        provider: "github",
-        callbackURL: "/dashboard",
-      });
-    } catch {
-      setError("Failed to continue with GitHub.");
-    } finally {
+      await githubSignIn();
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to continue with GitHub."
+      );
+
       setLoadingProvider(null);
     }
   }
@@ -134,41 +102,58 @@ export default function SignIn() {
           <CardTitle className="text-3xl font-bold tracking-tight">
             Sign In
           </CardTitle>
-          <CardDescription className="text-muted-foreground">
-            Sign in to access your account and continue where you left off.{" "}
+
+          <CardDescription>
+            Sign in to access your account and continue where
+            you left off.
           </CardDescription>
         </CardHeader>
 
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-5">
             {error && (
-              <div className="w-full rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+              <div className="rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
                 {error}
               </div>
             )}
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
+
               <Input
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-                className="h-11"
                 id="email"
                 type="email"
+                className="h-11"
                 placeholder="wassel@gmail.com"
+                autoComplete="email"
+                value={email}
+                disabled={loadingProvider !== null}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+
+                  if (error) setError("");
+                }}
                 required
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
+
               <Input
-                className="h-11"
                 id="password"
                 type="password"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                minLength={8}
+                className="h-11"
                 placeholder="••••••••"
+                autoComplete="current-password"
+                value={password}
+                disabled={loadingProvider !== null}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+
+                  if (error) setError("");
+                }}
+                minLength={8}
                 required
               />
             </div>
@@ -176,9 +161,14 @@ export default function SignIn() {
 
           <CardFooter className="flex flex-col gap-4">
             <Button
-              className="h-11 w-full"
               type="submit"
-              disabled={loadingProvider !== null}>
+              className="h-11 w-full"
+              disabled={
+                loadingProvider !== null ||
+                !email.trim() ||
+                !password.trim()
+              }
+            >
               {loadingProvider === "email" ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -188,13 +178,16 @@ export default function SignIn() {
                 "Sign In"
               )}
             </Button>
-            <div className="flex  w-full justify-end">
+
+            <div className="flex w-full justify-end">
               <Link
                 href="/forgot-password"
-                className="text-sm text-primary hover:underline">
+                className="text-sm text-primary hover:underline"
+              >
                 Forgot password?
               </Link>
             </div>
+
             <div className="relative w-full">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
@@ -206,12 +199,14 @@ export default function SignIn() {
                 </span>
               </div>
             </div>
+
             <Button
               type="button"
               variant="outline"
               className="h-11 w-full"
+              disabled={loadingProvider !== null}
               onClick={handleGoogleLogin}
-              disabled={loadingProvider !== null}>
+            >
               {loadingProvider === "google" ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -224,12 +219,14 @@ export default function SignIn() {
                 </>
               )}
             </Button>
+
             <Button
               type="button"
               variant="outline"
               className="h-11 w-full"
+              disabled={loadingProvider !== null}
               onClick={handleGithubLogin}
-              disabled={loadingProvider !== null}>
+            >
               {loadingProvider === "github" ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -244,11 +241,12 @@ export default function SignIn() {
             </Button>
 
             <p className="text-center text-sm text-muted-foreground">
-              Dont have an account? Create one.
+              Don t have an account?{" "}
               <Link
                 href="/sign-up"
-                className="font-medium text-primary transition-colors hover:underline">
-                Create an account.
+                className="font-medium text-primary hover:underline"
+              >
+                Create one
               </Link>
             </p>
           </CardFooter>
