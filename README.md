@@ -1,42 +1,86 @@
-# 🔐 Better Auth + Next.js + MongoDB
+# 🔐 Better Auth Authentication Starter
 
-A modern authentication starter built with **Next.js 15**, **Better Auth**, and **MongoDB**. It includes secure email/password authentication, Google & GitHub OAuth, email verification using OTP, protected routes, and a clean, scalable architecture.
+<p align="center">
+  A modern authentication starter built with <strong>Next.js 15</strong>, <strong>Better Auth</strong>, <strong>MongoDB</strong>, and <strong>Nodemailer</strong>.
+</p>
 
----
+<p align="center">
 
-## ✨ Features
+![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-green?logo=mongodb)
+![Better Auth](https://img.shields.io/badge/Better%20Auth-Authentication-orange)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-38BDF8?logo=tailwindcss)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-- 🔐 Better Auth integration
-- 👤 Email & Password authentication
-- ✉️ Email verification with 6-digit OTP
-- 🔄 Resend verification code
-- 🌐 Google & GitHub OAuth
-- 🍪 Secure session management
-- 🛡️ Protected routes
-- 🔒 Hashed OTP storage (SHA-256)
-- ⏱️ OTP expiration (10 minutes)
-- 🗄️ Shared MongoDB connection
-- 📧 Nodemailer email service
-- ⚡ Next.js App Router
-- 📘 TypeScript
-- 🎨 Tailwind CSS
-- 🧩 shadcn/ui components
-- 📱 Fully responsive UI
+</p>
 
 ---
 
-# 🛠️ Tech Stack
+# ✨ Overview
+
+A complete authentication starter built with **Next.js 15 App Router**, **Better Auth**, and **MongoDB**.
+
+It includes secure authentication with email/password, Google & GitHub OAuth, email verification using OTP, password recovery, password updates, protected routes, and a clean architecture powered by **Server Actions**.
+
+---
+
+# ✨ Features
+
+## Authentication
+
+- ✅ Email & Password Sign Up
+- ✅ Email & Password Sign In
+- ✅ Google OAuth
+- ✅ GitHub OAuth
+- ✅ Logout
+- ✅ Session Management
+- ✅ Protected Routes
+
+## Email Verification
+
+- ✅ 6-digit OTP verification
+- ✅ SHA-256 OTP hashing
+- ✅ OTP expiration (10 minutes)
+
+## Password Management
+
+- ✅ Forgot Password
+- ✅ Reset Password
+- ✅ Verify Reset Password
+- ✅ Change Password
+
+## Email
+
+- ✅ Nodemailer SMTP
+- ✅ Verification Email
+- ✅ Forgot Password Email
+- ✅ Reset Password Email
+- ✅ HTML Email Templates
+
+## Developer Experience
+
+- ✅ Next.js App Router
+- ✅ Server Actions
+- ✅ TypeScript
+- ✅ Tailwind CSS
+- ✅ shadcn/ui
+- ✅ Responsive UI
+
+---
+
+# 🛠 Tech Stack
 
 | Technology | Description |
 |------------|-------------|
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js 15 |
 | Language | TypeScript |
 | Authentication | Better Auth |
 | Database | MongoDB |
-| Email Service | Nodemailer |
+| Email | Nodemailer |
 | Styling | Tailwind CSS |
-| UI Components | shadcn/ui |
-| Icons | Lucide React & React Icons |
+| UI | shadcn/ui |
+| Icons | Lucide React |
 | Package Manager | npm |
 
 ---
@@ -44,80 +88,159 @@ A modern authentication starter built with **Next.js 15**, **Better Auth**, and 
 # 📂 Project Structure
 
 ```text
-.
-├── public
+src
+├── actions
+│   └── auth
+│       ├── forgot-password
+│       │   ├── forgot-password.ts
+│       │   └── reset-password.ts
+│       │
+│       ├── password-update
+│       │   └── password-update.ts
+│       │
+│       ├── sign-in
+│       │   ├── email-sign-in.ts
+│       │   ├── github-sign-in.ts
+│       │   └── google-sign-in.ts
+│       │
+│       ├── sign-up
+│       │   └── email-sign-up.ts
+│       │
+│       └── verify-email
+│           └── verify-email.ts
 │
-├── src
-│   ├── app
-│   │   ├── (auth)
-│   │   │   ├── sign-in
-│   │   │   ├── sign-up
-│   │   │   └── verify-email
+├── app
+│   ├── (auth)
+│   │   ├── forgot-password
+│   │   ├── reset-password
+│   │   ├── sign-in
+│   │   ├── sign-up
+│   │   ├── verify-reset-password
+│   │   └── layout.tsx
+│   │
+│   ├── (protected)
+│   │   ├── dashboard
+│   │   ├── settings
+│   │   │   ├── password
+│   │   │   ├── profile
+│   │   │   └── page.tsx
 │   │   │
-│   │   ├── (protected)
-│   │   │
-│   │   ├── api
-│   │   │   └── auth
-│   │   │       ├── resend-verification
-│   │   │       └── verify-email
-│   │   │
-│   │   ├── error.tsx
-│   │   ├── favicon.ico
-│   │   ├── globals.css
-│   │   ├── layout.tsx
-│   │   ├── loading.tsx
-│   │   ├── not-found.tsx
-│   │   └── page.tsx
+│   │   ├── verify-email
+│   │   └── layout.tsx
 │   │
-│   ├── assets
+│   ├── api
+│   │   └── auth
+│   │       └── verify-email
 │   │
-│   ├── components
-│   │
-│   ├── constants
-│   │
-│   ├── features
-│   │
-│   ├── hooks
-│   │
-│   ├── lib
-│   │   ├── auth
-│   │   │   ├── auth-client.ts
-│   │   │   ├── auth.ts
-│   │   │   └── generateOtp.ts
-│   │   │
-│   │   ├── email
-│   │   │   └── send-verification.ts
-│   │   │
-│   │   ├── db.ts
-│   │   ├── mailer.ts
-│   │   └── utils.ts
-│   │
-│   ├── middleware
-│   │
-│   ├── providers
-│   │
-│   └── services
+│   ├── error.tsx
+│   ├── loading.tsx
+│   ├── not-found.tsx
+│   ├── layout.tsx
+│   └── page.tsx
 │
-├── .env.local
-├── package.json
-└── README.md
+├── components
+├── hooks
+├── middleware
+├── providers
+│
+├── lib
+│   ├── auth
+│   ├── email
+│   ├── mailer.ts
+│   └── db.ts
+│
+└── assets
 ```
 
 ---
 
-# 🚀 Getting Started
+# 🔐 Authentication Flow
 
-## 1. Clone the repository
+```text
+Sign Up
+   │
+   ▼
+Create Account
+   │
+   ▼
+Generate OTP
+   │
+   ▼
+Hash OTP (SHA-256)
+   │
+   ▼
+Store OTP
+   │
+   ▼
+Send Verification Email
+   │
+   ▼
+Verify Email
+   │
+   ▼
+Sign In
+   │
+   ▼
+Dashboard
+```
+
+---
+
+# 🔑 Forgot Password Flow
+
+```text
+Forgot Password
+        │
+        ▼
+Enter Email
+        │
+        ▼
+Generate Reset Token
+        │
+        ▼
+Send Reset Email
+        │
+        ▼
+Verify Reset Token
+        │
+        ▼
+Create New Password
+        │
+        ▼
+Sign In
+```
+
+---
+
+# 🔒 Security
+
+- Better Auth session management
+- Secure password hashing
+- SHA-256 OTP hashing
+- Email verification
+- Protected routes
+- Secure cookies
+- Server Actions
+- Environment variables
+- TypeScript
+
+---
+
+# 📦 Installation
+
+Clone the repository:
 
 ```bash
 git clone https://github.com/wasselessalah/nextjs-better-auth.git
+```
 
+Go to the project directory:
+
+```bash
 cd nextjs-better-auth
 ```
 
----
-
-## 2. Install dependencies
+Install dependencies:
 
 ```bash
 npm install
@@ -125,19 +248,19 @@ npm install
 
 ---
 
-## 3. Configure environment variables
+# ⚙️ Environment Variables
 
 Create a `.env.local` file.
 
 ```env
-# Database
+# MongoDB
 MONGODB_URI=
 
 # Better Auth
 BETTER_AUTH_SECRET=
 BETTER_AUTH_URL=http://localhost:3000
 
-# Email (Gmail App Password)
+# Nodemailer (SMTP)
 EMAIL_USER=
 EMAIL_PASS=
 
@@ -150,101 +273,51 @@ GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
 ```
 
+> **Note:** When using Gmail with Nodemailer, `EMAIL_PASS` must be a **Google App Password**, not your Gmail account password.
+
 ---
 
-## 4. Run the development server
+# 🚀 Running the Project
+
+Development:
 
 ```bash
 npm run dev
 ```
 
-Visit
-
-```text
-http://localhost:3000
-```
-
----
-
-# 📦 Available Scripts
+Production:
 
 ```bash
-npm run dev      # Start development server
-
-npm run build    # Build production application
-
-npm run start    # Run production server
-
-npm run lint     # Run ESLint
+npm run build
+npm run start
 ```
 
 ---
 
-# 🔑 Authentication Flow
+# 📜 Available Scripts
 
-```text
-User Registration
-        │
-        ▼
-Create Account
-        │
-        ▼
-Generate OTP
-        │
-        ▼
-Hash OTP (SHA-256)
-        │
-        ▼
-Store in MongoDB
-        │
-        ▼
-Send Verification Email
-        │
-        ▼
-User Enters OTP
-        │
-        ├──────────────┐
-        │              │
-        ▼              ▼
-Valid OTP      Invalid OTP
-        │              │
-        ▼              ▼
-Verify Email   Retry / Request New Code
-        │
-        ▼
-Dashboard
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
 ```
 
 ---
 
-# 🔒 Security Features
+# 📈 Recommended Rate Limits
 
-- Better Auth session management
-- Email verification before access
-- Secure 6-digit OTP verification
-- SHA-256 OTP hashing
-- OTP expiration (10 minutes)
-- Shared MongoDB connection
-- Protected routes
-- Environment variable validation
-- TypeScript for type safety
-
-### Recommended Rate Limits
-
-| Action | Limit |
-|----------|---------------------------|
-| Resend OTP | 3 requests / 10 minutes / email |
-| Generate OTP | 5 requests / hour / email |
-| Verify OTP | 5 attempts / OTP |
-| Login | 5 failed attempts / 15 minutes |
+| Action | Recommendation |
+|---------|---------------|
 | Sign Up | 5 requests / hour / IP |
-| Forgot Password | 3 requests / hour / email |
+| Login | 5 failed attempts / 15 minutes |
+| Verify OTP | 5 attempts |
+| Forgot Password | 3 requests / hour |
+| Reset Password | Token expires after 10 minutes |
 
 ---
 
-# 📧 Authentication Providers
-
-Supported providers include:
+# 🌐 Authentication Providers
 
 - ✅ Email & Password
 - ✅ Google OAuth
@@ -252,25 +325,9 @@ Supported providers include:
 
 ---
 
-# 📁 Environment Variables
-
-| Variable | Description |
-|----------|-------------|
-| `MONGODB_URI` | MongoDB connection string |
-| `BETTER_AUTH_SECRET` | Better Auth secret |
-| `BETTER_AUTH_URL` | Application URL |
-| `EMAIL_USER` | SMTP email address |
-| `EMAIL_PASS` | SMTP app password |
-| `GOOGLE_CLIENT_ID` | Google OAuth Client ID |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret |
-| `GITHUB_CLIENT_ID` | GitHub OAuth Client ID |
-| `GITHUB_CLIENT_SECRET` | GitHub OAuth Client Secret |
-
----
-
 # 🚀 Deployment
 
-Deploy on your preferred platform:
+Deploy on:
 
 - ▲ Vercel
 - 🚂 Railway
@@ -282,25 +339,25 @@ Deploy on your preferred platform:
 
 ---
 
-# 📚 Resources
+# 📚 Documentation
 
-- Better Auth Documentation
-- Next.js Documentation
-- MongoDB Documentation
-- Nodemailer Documentation
-- Tailwind CSS Documentation
-- shadcn/ui Documentation
+- Better Auth
+- Next.js
+- MongoDB
+- Nodemailer
+- Tailwind CSS
+- shadcn/ui
 
 ---
 
 # 🤝 Contributing
 
-Contributions are welcome!
+Contributions are welcome.
 
 1. Fork the repository.
-2. Create a new feature branch.
+2. Create a feature branch.
 3. Commit your changes.
-4. Push the branch.
+4. Push your branch.
 5. Open a Pull Request.
 
 ---
@@ -311,12 +368,12 @@ This project is licensed under the **MIT License**.
 
 ---
 
-## ⭐ Support
+# ⭐ Support
 
 If you find this project useful, consider giving it a **⭐ Star** on GitHub.
 
-Your support helps improve the project and encourages future updates.
-
 ---
 
-Made with ❤️ using **Next.js**, **Better Auth**, **MongoDB**, and **TypeScript**.
+<p align="center">
+Made with ❤️ using <strong>Next.js</strong>, <strong>Better Auth</strong>, <strong>MongoDB</strong>, <strong>Nodemailer</strong>, and <strong>TypeScript</strong>.
+</p>
