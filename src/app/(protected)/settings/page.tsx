@@ -1,12 +1,10 @@
 import Link from "next/link";
-import { ChevronRight, Lock, User } from "lucide-react";
+import { ChevronRight, Lock, Shield, User } from "lucide-react";
 
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+  
 } from "@/components/ui/card";
 
 export default function SettingsPage() {
@@ -53,6 +51,26 @@ export default function SettingsPage() {
                   <h2 className="font-semibold">Password</h2>
                   <p className="text-sm text-muted-foreground">
                     Change your account password.
+                  </p>
+                </div>
+              </div>
+
+              <ChevronRight className="h-5 w-5 text-muted-foreground" />
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/settings/security">
+          <Card className="transition-colors hover:border-primary cursor-pointer">
+            <CardContent className="flex items-center justify-between p-6">
+              <div className="flex items-center gap-4">
+                <div className="rounded-lg bg-primary/10 p-3">
+                  <Shield className="h-5 w-5 text-primary" />
+                </div>
+
+                <div>
+                  <h2 className="font-semibold">Security</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Manage your devices, active sessions, and account security.
                   </p>
                 </div>
               </div>
