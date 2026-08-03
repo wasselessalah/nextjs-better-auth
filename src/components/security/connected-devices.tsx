@@ -131,7 +131,7 @@ export default function ConnectedDevices({
                 <div key={session.id}>
                   <div className="flex items-start justify-between gap-6">
                     <div className="flex gap-4">
-                      <div className="rounded-xl bg-primary/10 p-3">
+                      <div className="rounded-xl bg-primary/10 max-h-12 p-3">
                         <DeviceIcon className="h-6 w-6 text-primary" />
                       </div>
 
@@ -144,7 +144,7 @@ export default function ConnectedDevices({
                           </h3>
 
                           {session.current && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-900/20 dark:text-green-400">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-xs  font-medium text-green-700 dark:bg-green-900/20 dark:text-green-400">
                               <CircleCheck className="h-3 w-3" />
                               Current
                             </span>
@@ -164,11 +164,11 @@ export default function ConnectedDevices({
                           {os}
                         </p>
 
-                        {/* <p className="text-xs text-muted-foreground">
+                         {/* <p className="text-xs text-muted-foreground">
                           IP Address:{" "}
                           {session.ipAddress ??
                             "Unknown"}
-                        </p> */}
+                        </p>  */}
 
                         <p className="text-xs text-muted-foreground">
                           Signed in:{" "}

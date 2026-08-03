@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { ReactNode, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { UAParser } from "ua-parser-js";
 import {
@@ -11,6 +11,7 @@ import {
   Tablet,
   Globe,
 } from "lucide-react";
+
 import {
   FaChrome,
   FaFirefox,
@@ -40,33 +41,41 @@ interface SessionCardProps {
   userAgent?: string;
 }
 
-function getBrowserIcon(browser?: string) {
+function getBrowserIcon(browser?: string): ReactNode {
   switch (browser?.toLowerCase()) {
     case "chrome":
-      return FaChrome;
+      return <FaChrome className="h-5 w-5 text-primary" />;
+
     case "firefox":
-      return FaFirefox;
+      return <FaFirefox className="h-5 w-5 text-primary" />;
+
     case "safari":
-      return FaSafari;
+      return <FaSafari className="h-5 w-5 text-primary" />;
+
     case "edge":
-      return FaEdge;
+      return <FaEdge className="h-5 w-5 text-primary" />;
+
     case "opera":
-      return FaOpera;
+      return <FaOpera className="h-5 w-5 text-primary" />;
+
     case "brave":
-      return SiBrave;
+      return <SiBrave className="h-5 w-5 text-primary" />;
+
     default:
-      return Globe;
+      return <Globe className="h-5 w-5 text-primary" />;
   }
 }
 
-function getDeviceIcon(type?: string) {
+function getDeviceIcon(type?: string): ReactNode {
   switch (type) {
     case "mobile":
-      return Smartphone;
+      return <Smartphone className="h-8 w-8 text-destructive" />;
+
     case "tablet":
-      return Tablet;
+      return <Tablet className="h-8 w-8 text-destructive" />;
+
     default:
-      return Laptop;
+      return <Laptop className="h-8 w-8 text-destructive" />;
   }
 }
 
@@ -86,24 +95,30 @@ export default function SessionCard({
   const os = parser.getOS().name ?? "Unknown OS";
   const device = parser.getDevice().type ?? "desktop";
 
-  const DeviceIcon = getDeviceIcon(device);
-  const BrowserIcon = getBrowserIcon(browser);
-
   function handleSignOut() {
     startTransition(async () => {
-      const result = await revokeSession(token);
+      try {
+        const result = await revokeSession(token);
 
-      if (!result.success) return;
+        if (!result.success) {
+          console.error("Error ");
+          return;
+        }
 
-      setOpen(false);
-      router.refresh();
+        setOpen(false);
+        router.refresh();
+      } catch (error) {
+        console.error(error);
+      }
     });
   }
 
   return (
     <AlertDialog
       open={open}
-      onOpenChange={(value) => !pending && setOpen(value)}
+      onOpenChange={(value) => {
+        if (!pending) setOpen(value);
+      }}
     >
       <AlertDialogTrigger >
         <Button variant="outline" size="sm">
@@ -115,7 +130,7 @@ export default function SessionCard({
       <AlertDialogContent className="sm:max-w-md">
         <AlertDialogHeader>
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
-            <DeviceIcon className="h-8 w-8 text-destructive" />
+            {getDeviceIcon(device)}
           </div>
 
           <AlertDialogTitle className="text-center">
@@ -124,12 +139,13 @@ export default function SessionCard({
 
           <AlertDialogDescription className="text-center">
             This device will immediately lose access to your account.
+            You can sign back in later at any time.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <div className="rounded-lg border bg-muted/40 p-4">
           <div className="flex items-center gap-3">
-            <BrowserIcon className="h-5 w-5 text-primary" />
+            {getBrowserIcon(browser)}
 
             <div>
               <p className="font-medium">
