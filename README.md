@@ -24,6 +24,21 @@ A complete authentication starter built with **Next.js 15 App Router**, **Better
 It includes secure authentication with email/password, Google & GitHub OAuth, email verification using OTP, password recovery, password updates, protected routes, and a clean architecture powered by **Server Actions**.
 
 ---
+#  Highlights
+
+* 🔐 Complete Authentication System
+* 🌍 Google & GitHub OAuth
+* ✉️ Email Verification with OTP
+* 🔑 Password Recovery
+* 🛡️ Security Dashboard
+* 💻 Connected Devices Management
+* 🔒 Logout From Individual Devices
+* 🌐 Logout From All Devices
+* ⚡ Server Actions
+* 📱 Fully Responsive
+* 🎨 Modern UI with shadcn/ui
+* 🧩 Clean & Modular Architecture
+
 
 # ✨ Features
 
@@ -43,6 +58,7 @@ It includes secure authentication with email/password, Google & GitHub OAuth, em
 - ✅ SHA-256 OTP hashing
 - ✅ OTP expiration (10 minutes)
 
+
 ## Password Management
 
 - ✅ Forgot Password
@@ -57,6 +73,21 @@ It includes secure authentication with email/password, Google & GitHub OAuth, em
 - ✅ Forgot Password Email
 - ✅ Reset Password Email
 - ✅ HTML Email Templates
+
+🛡️ Security Dashboard
+- ✅ Connected Devices
+- ✅ Current Session Detection
+- ✅ Session Management
+- ✅ Revoke Individual Sessions
+- ✅ Logout From All Other Devices
+- ✅ Browser Detection
+- ✅ Operating System Detection
+- ✅ Desktop / Mobile / Tablet Detection
+- ✅ IP Address Display
+- ✅ Session Creation Time
+- ✅ Last Activity
+- ✅ Confirmation Dialogs
+- ✅ Account Security Overview
 
 ## Developer Experience
 
@@ -95,6 +126,11 @@ src
 │       │   ├── forgot-password.ts
 │       │   └── reset-password.ts
 │       │
+│       ├── security
+│       │   ├── get-sessions.ts
+│       │   ├── revoke-session.ts
+│       │   └── revoke-all-sessions.ts
+│       │   
 │       ├── password-update
 │       │   └── password-update.ts
 │       │
@@ -121,8 +157,9 @@ src
 │   ├── (protected)
 │   │   ├── dashboard
 │   │   ├── settings
-│   │   │   ├── password
 │   │   │   ├── profile
+│   │   │   ├── password
+│   │   │   └── security
 │   │   │   └── page.tsx
 │   │   │
 │   │   ├── verify-email
@@ -210,20 +247,64 @@ Create New Password
 Sign In
 ```
 
+
+
+
+
+
+
+---
+# 🛡️ Session Management Flow
+
+
+```text
+User Login
+      │
+      ▼
+Create Session
+      │
+      ▼
+Store Session
+      │
+      ▼
+View Connected Devices
+      │
+      ▼
+Revoke One Session
+      │
+      ├──────────────► Logout Selected Device
+      │
+      ▼
+Logout All Devices
+      │
+      ▼
+Revoke All Sessions
+```
+
 ---
 
 # 🔒 Security
 
-- Better Auth session management
-- Secure password hashing
-- SHA-256 OTP hashing
-- Email verification
-- Protected routes
-- Secure cookies
-- Server Actions
-- Environment variables
-- TypeScript
-
+- Better Auth Session Management
+- Secure HTTP-only Cookies
+- Protected Routes
+- Email Verification Required
+- Secure Password Hashing
+- SHA-256 OTP Hashing
+- OTP Expiration
+- Password Reset Tokens
+- Active Session Tracking
+- Connected Devices Dashboard
+- Browser Detection
+- Device Detection
+- Operating System Detection
+- Session Revocation
+- Logout From All Devices
+- Current Session Identification
+- Confirmation Dialogs
+- Environment Variable Validation
+- TypeScript Type Safety
+- Secure Server Actions
 ---
 
 # 📦 Installation
