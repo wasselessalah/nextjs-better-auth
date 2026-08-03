@@ -74,7 +74,7 @@ It includes secure authentication with email/password, Google & GitHub OAuth, em
 - ✅ Reset Password Email
 - ✅ HTML Email Templates
 
-🛡️ Security Dashboard
+# 🛡️ Security Dashboard
 - ✅ Connected Devices
 - ✅ Current Session Detection
 - ✅ Session Management
