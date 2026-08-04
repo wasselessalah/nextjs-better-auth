@@ -36,16 +36,61 @@ export const auth = betterAuth({
         after: async (session) => {
           try {
             const database = await connectDB();
+            const now = new Date();
+
+            // Persist login history
             await database.collection("loginHistory").insertOne({
               userId: session.userId,
               sessionToken: session.token,
               ipAddress: session.ipAddress ?? null,
               userAgent: session.userAgent ?? null,
-              createdAt: session.createdAt ?? new Date(),
+              createdAt: session.createdAt ?? now,
+            });
+
+            // Persist security activity
+            await database.collection("securityActivity").insertOne({
+              userId: session.userId,
+              type: "sign_in",
+              ipAddress: session.ipAddress ?? null,
+              userAgent: session.userAgent ?? null,
+              createdAt: session.createdAt ?? now,
             });
           } catch (error) {
-            // Non-critical — never block sign-in
-            console.error("loginHistory insert failed:", error);
+            console.error("loginHistory/securityActivity insert failed:", error);
+          }
+        },
+      },
+      delete: {
+        after: async (session) => {
+          try {
+            const database = await connectDB();
+            await database.collection("securityActivity").insertOne({
+              userId: session.userId,
+              type: "sign_out",
+              ipAddress: session.ipAddress ?? null,
+              userAgent: session.userAgent ?? null,
+              createdAt: new Date(),
+            });
+          } catch (error) {
+            console.error("securityActivity sign_out insert failed:", error);
+          }
+        },
+      },
+    },
+    user: {
+      update: {
+        after: async (user) => {
+          try {
+            const database = await connectDB();
+            await database.collection("securityActivity").insertOne({
+              userId: user.id,
+              type: "password_change",
+              ipAddress: null,
+              userAgent: null,
+              createdAt: new Date(),
+            });
+          } catch (error) {
+            console.error("securityActivity password_change insert failed:", error);
           }
         },
       },
