@@ -1,7 +1,7 @@
 # 🔐 Better Auth Authentication Starter
 
 <p align="center">
-  A modern authentication starter built with <strong>Next.js 15</strong>, <strong>Better Auth</strong>, <strong>MongoDB</strong>, and <strong>Nodemailer</strong>.
+  A production-ready authentication starter built with <strong>Next.js 15</strong>, <strong>Better Auth</strong>, <strong>MongoDB</strong>, and <strong>Nodemailer</strong>.
 </p>
 
 <p align="center">
@@ -17,126 +17,130 @@
 
 ---
 
-# ✨ Overview
+## ✨ Overview
 
-A complete authentication starter built with **Next.js 15 App Router**, **Better Auth**, and **MongoDB**.
+A complete, production-ready authentication starter using the **Next.js 15 App Router**, **Better Auth**, and **MongoDB**.
 
-It includes secure authentication with email/password, Google & GitHub OAuth, email verification using OTP, password recovery, password updates, protected routes, and a clean architecture powered by **Server Actions**.
-
----
-#  Highlights
-
-* 🔐 Complete Authentication System
-* 🌍 Google & GitHub OAuth
-* ✉️ Email Verification with OTP
-* 🔑 Password Recovery
-* 🛡️ Security Dashboard
-* 💻 Connected Devices Management
-* 🔒 Logout From Individual Devices
-* 🌐 Logout From All Devices
-* 📋 Persistent Login History
-* 🔍 Security Activity Audit Log
-* ⚡ Server Actions
-* 📱 Fully Responsive
-* 🎨 Modern UI with shadcn/ui
-* 🧩 Clean & Modular Architecture
-
-
-# ✨ Features
-
-## Authentication
-
-- ✅ Email & Password Sign Up
-- ✅ Email & Password Sign In
-- ✅ Google OAuth
-- ✅ GitHub OAuth
-- ✅ Logout
-- ✅ Session Management
-- ✅ Protected Routes
-
-## Email Verification
-
-- ✅ 6-digit OTP verification
-- ✅ SHA-256 OTP hashing
-- ✅ OTP expiration (10 minutes)
-
-
-## Password Management
-
-- ✅ Forgot Password
-- ✅ Reset Password
-- ✅ Verify Reset Password
-- ✅ Change Password
-
-## Email
-
-- ✅ Nodemailer SMTP
-- ✅ Verification Email
-- ✅ Forgot Password Email
-- ✅ Reset Password Email
-- ✅ HTML Email Templates
-
-# 🛡️ Security Dashboard
-- ✅ Connected Devices
-- ✅ Current Session Detection
-- ✅ Session Management
-- ✅ Revoke Individual Sessions
-- ✅ Logout From All Other Devices
-- ✅ Browser Detection
-- ✅ Operating System Detection
-- ✅ Desktop / Mobile / Tablet Detection
-- ✅ IP Address Display
-- ✅ Session Creation Time
-- ✅ Last Activity
-- ✅ Confirmation Dialogs
-- ✅ Account Security Overview
-
-## 📋 Login History
-- ✅ Persistent Login History (survives session expiry)
-- ✅ Stored in dedicated MongoDB `loginHistory` collection
-- ✅ Recorded on every sign-in via `databaseHooks`
-- ✅ Browser, OS & Device parsed from User-Agent
-- ✅ IP Address tracking
-- ✅ Live client-side search (browser, OS, IP)
-- ✅ Current session highlighted
-- ✅ Human-readable timestamps (Today, Yesterday, date)
-
-## 🔍 Security Activity
-- ✅ Full audit log of all security events
-- ✅ Tracks: Sign In, Sign Out, Password Change
-- ✅ Stored in dedicated MongoDB `securityActivity` collection
-- ✅ Colour-coded event badges (green / orange / blue)
-- ✅ Stats cards: Total Events, Sign Ins, Sign Outs, Password Changes
-- ✅ Empty state with guidance
-
-## Developer Experience
-
-- ✅ Next.js App Router
-- ✅ Server Actions
-- ✅ TypeScript
-- ✅ Tailwind CSS
-- ✅ shadcn/ui
-- ✅ Responsive UI
+Includes secure email/password auth, Google & GitHub OAuth, OTP email verification, password recovery, a full security dashboard with persistent login history, security activity audit logs, paginated connected devices, and a modular component architecture powered by **Server Actions**.
 
 ---
 
-# 🛠 Tech Stack
+## 🚀 Highlights
 
-| Technology | Description |
-|------------|-------------|
-| Framework | Next.js 15 |
-| Language | TypeScript |
-| Authentication | Better Auth |
-| Database | MongoDB |
-| Email | Nodemailer |
-| Styling | Tailwind CSS |
-| UI | shadcn/ui |
-| Icons | Lucide React |
-| Package Manager | npm |
+| | Feature |
+|---|---|
+| 🔐 | Complete Authentication System |
+| 🌍 | Google & GitHub OAuth |
+| ✉️ | Email Verification with OTP |
+| 🔑 | Password Recovery via Email |
+| 🛡️ | Full Security Dashboard |
+| 💻 | Connected Devices Management |
+| 📋 | Persistent Login History |
+| 🔍 | Security Activity Audit Log |
+| 🔒 | Password Strength Meter |
+| 📄 | Pagination on all list views |
+| ⚡ | Server Actions Architecture |
+| 📱 | Fully Responsive UI |
+| 🎨 | Modern UI with shadcn/ui |
+| 🧩 | Clean & Modular Component Architecture |
 
 ---
 
-# 📂 Project Structure
+## ✅ Features
+
+### Authentication
+- Email & Password Sign Up / Sign In
+- Google OAuth
+- GitHub OAuth
+- Logout (single device or all devices)
+- Session Management
+- Protected Routes via Middleware
+
+### Email Verification
+- 6-digit OTP code
+- SHA-256 OTP hashing
+- OTP expiration (10 minutes)
+
+### Password Management
+- Forgot Password flow
+- Reset Password via email token
+- Change Password (with live strength meter)
+- Show/hide password toggle on all fields
+- Session stays active after password change
+
+### Email System
+- Nodemailer SMTP integration
+- Verification email template
+- Forgot Password email template
+- Reset Password email template
+- HTML email templates
+
+### 🛡️ Security Dashboard
+- Connected Devices list (paginated)
+- Current device/session detection
+- Revoke individual sessions
+- Logout from all other devices
+- Browser, OS & device type detection
+- IP address display
+- Session creation & last activity timestamps
+- Confirmation dialogs before destructive actions
+
+### 📋 Login History
+- Permanent record (survives session expiry/revocation)
+- Dedicated MongoDB `loginHistory` collection
+- Recorded on every sign-in via `databaseHooks`
+- Browser, OS & device parsed from User-Agent
+- IP address tracking
+- Live client-side search (by browser, OS, IP)
+- Current session badge
+- Human-readable timestamps (Today, Yesterday, date)
+- Paginated (5 per page)
+
+### 🔍 Security Activity
+- Full audit log of all security events
+- Tracks: Sign In, Sign Out, Password Change
+- Dedicated MongoDB `securityActivity` collection
+- Colour-coded badges (🟢 sign in · 🟠 sign out · 🔵 password change)
+- Stats cards: Total Events, Sign Ins, Sign Outs, Password Changes
+- Paginated (5 per page)
+
+### 🔒 Password Change Page
+- Live strength indicator (5-segment animated bar)
+- Real-time rules checklist (length, uppercase, lowercase, digit, special char)
+- Match indicator on confirm field
+- Show/hide toggle on all 3 password fields
+- Tips sidebar with password best practices
+- Redirects to Security page after success
+
+### Developer Experience
+- Next.js 15 App Router
+- Server Actions
+- TypeScript (strict, zero errors)
+- Tailwind CSS v4
+- shadcn/ui
+- Modular component architecture
+- Reusable `Pagination` component
+
+---
+
+## 🛠 Tech Stack
+
+| Technology | Purpose |
+|------------|---------|
+| Next.js 15 | Framework (App Router) |
+| TypeScript | Type safety |
+| Better Auth | Authentication engine |
+| MongoDB | Database |
+| Nodemailer | Email delivery |
+| Tailwind CSS v4 | Styling |
+| shadcn/ui | UI components |
+| Lucide React | Icons |
+| ua-parser-js | User-Agent parsing |
+| npm | Package manager |
+
+---
+
+## 📂 Project Structure
 
 ```text
 src
@@ -152,7 +156,7 @@ src
 │       │   ├── get-security-activity.ts
 │       │   ├── revoke-session.ts
 │       │   └── revoke-all-sessions.ts
-│       │   
+│       │
 │       ├── password-update
 │       │   └── password-update.ts
 │       │
@@ -193,7 +197,6 @@ src
 │   │
 │   ├── api
 │   │   └── auth
-│   │       └── verify-email
 │   │
 │   ├── error.tsx
 │   ├── loading.tsx
@@ -202,22 +205,52 @@ src
 │   └── page.tsx
 │
 ├── components
-├── hooks
-├── middleware
-├── providers
+│   ├── password
+│   │   ├── password-input.tsx
+│   │   ├── password-strength-bar.tsx
+│   │   └── password-tips.tsx
+│   │
+│   ├── security
+│   │   ├── login-history
+│   │   │   ├── device-icon.tsx
+│   │   │   ├── login-history-list.tsx
+│   │   │   ├── login-history-row.tsx
+│   │   │   ├── login-history-search.tsx
+│   │   │   └── login-history-stats.tsx
+│   │   │
+│   │   ├── security-activity
+│   │   │   ├── activity-list.tsx
+│   │   │   ├── activity-row.tsx
+│   │   │   └── activity-stats.tsx
+│   │   │
+│   │   ├── connected-devices.tsx
+│   │   ├── danger-zone.tsx
+│   │   ├── security-links.tsx
+│   │   ├── security-overview.tsx
+│   │   ├── session-card.tsx
+│   │   └── sign-out-all-devices.tsx
+│   │
+│   ├── ui
+│   │   ├── pagination.tsx       ← shared paginator
+│   │   └── ... (shadcn/ui)
+│   │
+│   └── change-password-form.tsx
 │
 ├── lib
 │   ├── auth
+│   │   └── auth.ts              ← databaseHooks config
 │   ├── email
 │   ├── mailer.ts
 │   └── db.ts
 │
-└── assets
+├── hooks
+├── middleware
+└── providers
 ```
 
 ---
 
-# 🔐 Authentication Flow
+## 🔐 Authentication Flow
 
 ```text
 Sign Up
@@ -226,171 +259,91 @@ Sign Up
 Create Account
    │
    ▼
-Generate OTP
+Generate OTP → Hash (SHA-256) → Store → Send Verification Email
    │
    ▼
-Hash OTP (SHA-256)
+User Verifies Email
    │
    ▼
-Store OTP
-   │
-   ▼
-Send Verification Email
-   │
-   ▼
-Verify Email
-   │
-   ▼
-Sign In
-   │
-   ▼
-Dashboard
+Sign In → Dashboard
 ```
 
 ---
 
-# 🔑 Forgot Password Flow
+## 🔑 Forgot Password Flow
 
 ```text
-Forgot Password
-        │
-        ▼
 Enter Email
-        │
-        ▼
-Generate Reset Token
-        │
-        ▼
-Send Reset Email
-        │
-        ▼
-Verify Reset Token
-        │
-        ▼
-Create New Password
-        │
-        ▼
-Sign In
+   │
+   ▼
+Generate Reset Token → Send Reset Email
+   │
+   ▼
+User Clicks Link → Verify Token
+   │
+   ▼
+Create New Password → Sign In
 ```
 
-
-
-
-
-
-
 ---
-# 🛡️ Session Management Flow
 
+## 🛡️ Session & Audit Flow
 
 ```text
-User Login
-      │
-      ▼
+User Signs In
+   │
+   ▼
 Create Session ──► databaseHooks.session.create.after
-      │                  │
-      ▼                  ├──► Insert into `loginHistory`
-Store Session            └──► Insert into `securityActivity` (type: sign_in)
-      │
-      ▼
-View Connected Devices
-      │
-      ▼
-Revoke One Session ──► databaseHooks.session.delete.after
-      │                      └──► Insert into `securityActivity` (type: sign_out)
-      ├──────────────► Logout Selected Device
-      │
-      ▼
-Logout All Devices
-      │
-      ▼
-Revoke All Sessions
-```
-
----
-# 📋 Login History & Security Activity Flow
-
-```text
-Sign In
+   │                       │
+   │                       ├──► loginHistory    { userId, sessionToken, ip, userAgent, createdAt }
+   │                       └──► securityActivity { userId, type: "sign_in", ip, userAgent, createdAt }
+   ▼
+Session Active
    │
    ▼
-databaseHooks.session.create.after
-   │
-   ├──► loginHistory collection
-   │       userId, sessionToken, ipAddress, userAgent, createdAt
-   │
-   └──► securityActivity collection
-           userId, type: "sign_in", ipAddress, userAgent, createdAt
+Revoke Session ──► databaseHooks.session.delete.after
+                           └──► securityActivity { userId, type: "sign_out", createdAt }
 
-Sign Out / Session Revoked
-   │
-   ▼
-databaseHooks.session.delete.after
-   └──► securityActivity collection
-           userId, type: "sign_out", createdAt
-
-Password Changed
-   │
-   ▼
-databaseHooks.user.update.after
-   └──► securityActivity collection
-           userId, type: "password_change", createdAt
+Password Changed (via updatePassword action)
+   └──► securityActivity { userId, type: "password_change", ip, userAgent, createdAt }
 ```
 
 ---
 
-# 🔒 Security
+## 🔒 Security Measures
 
-- Better Auth Session Management
-- Secure HTTP-only Cookies
-- Protected Routes
-- Email Verification Required
-- Secure Password Hashing
-- SHA-256 OTP Hashing
-- OTP Expiration
-- Password Reset Tokens
-- Active Session Tracking
-- Connected Devices Dashboard
-- Browser Detection
-- Device Detection
-- Operating System Detection
-- Session Revocation
-- Logout From All Devices
-- Current Session Identification
-- Confirmation Dialogs
-- Environment Variable Validation
-- TypeScript Type Safety
-- Secure Server Actions
-- Persistent Login History (survives session expiry/revocation)
-- Security Activity Audit Log (sign-in, sign-out, password changes)
-- Event-driven logging via `databaseHooks` (never blocks auth flow)
+- HTTP-only session cookies
+- Protected routes via middleware
+- Email verification required before access
+- Secure password hashing (via Better Auth)
+- SHA-256 OTP hashing with expiration
+- Password reset tokens with expiration
+- Session revocation (individual & all devices)
+- Current session identification
+- Persistent login history (survives session expiry)
+- Security activity audit log (sign-in, sign-out, password changes)
+- Event-driven logging via `databaseHooks` (non-blocking — never interrupts auth flow)
+- TypeScript strict mode — zero type errors
+- Server Actions for all mutations
+
 ---
 
-# 📦 Installation
-
-Clone the repository:
+## 📦 Installation
 
 ```bash
+# Clone
 git clone https://github.com/wasselessalah/nextjs-better-auth.git
-```
-
-Go to the project directory:
-
-```bash
 cd nextjs-better-auth
-```
 
-Install dependencies:
-
-```bash
+# Install
 npm install
 ```
 
 ---
 
-# ⚙️ Environment Variables
+## ⚙️ Environment Variables
 
-Create a `.env.local` file.
+Create a `.env.local` file:
 
 ```env
 # MongoDB
@@ -413,107 +366,95 @@ GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
 ```
 
-> **Note:** When using Gmail with Nodemailer, `EMAIL_PASS` must be a **Google App Password**, not your Gmail account password.
+> **Note:** When using Gmail, `EMAIL_PASS` must be a **Google App Password**, not your regular Gmail password. [Create one here →](https://myaccount.google.com/apppasswords)
 
 ---
 
-# 🚀 Running the Project
-
-Development:
+## 🚀 Running the Project
 
 ```bash
+# Development
 npm run dev
-```
 
-Production:
-
-```bash
+# Production
 npm run build
 npm run start
-```
 
----
-
-# 📜 Available Scripts
-
-```bash
-npm run dev
-npm run build
-npm run start
+# Lint
 npm run lint
 ```
 
 ---
 
-# 📈 Recommended Rate Limits
+## 📈 Recommended Rate Limits
 
-| Action | Recommendation |
-|---------|---------------|
+| Action | Recommended Limit |
+|--------|------------------|
 | Sign Up | 5 requests / hour / IP |
-| Login | 5 failed attempts / 15 minutes |
+| Sign In | 5 failed attempts / 15 min |
 | Verify OTP | 5 attempts |
 | Forgot Password | 3 requests / hour |
-| Reset Password | Token expires after 10 minutes |
+| Reset Password | Token expires after 10 min |
 
 ---
 
-# 🌐 Authentication Providers
+## 🌐 OAuth Providers
 
-- ✅ Email & Password
-- ✅ Google OAuth
-- ✅ GitHub OAuth
-
----
-
-# 🚀 Deployment
-
-Deploy on:
-
-- ▲ Vercel
-- 🚂 Railway
-- 🎨 Render
-- 🐳 Docker
-- ☁️ AWS
-- ☁️ Azure
-- ☁️ Google Cloud
+| Provider | Status |
+|----------|--------|
+| Email & Password | ✅ |
+| Google | ✅ |
+| GitHub | ✅ |
 
 ---
 
-# 📚 Documentation
+## 🚀 Deployment
 
-- Better Auth
-- Next.js
-- MongoDB
-- Nodemailer
-- Tailwind CSS
-- shadcn/ui
-
----
-
-# 🤝 Contributing
-
-Contributions are welcome.
-
-1. Fork the repository.
-2. Create a feature branch.
-3. Commit your changes.
-4. Push your branch.
-5. Open a Pull Request.
+| Platform | Notes |
+|----------|-------|
+| ▲ Vercel | Recommended — zero config with Next.js |
+| 🚂 Railway | Good for full-stack with MongoDB |
+| 🎨 Render | Free tier available |
+| 🐳 Docker | Use the provided Dockerfile |
+| ☁️ AWS / Azure / GCP | Enterprise deployments |
 
 ---
 
-# 📄 License
+## 📚 Documentation Links
 
-This project is licensed under the **MIT License**.
+- [Better Auth](https://better-auth.com)
+- [Next.js 15](https://nextjs.org/docs)
+- [MongoDB](https://www.mongodb.com/docs)
+- [Nodemailer](https://nodemailer.com)
+- [shadcn/ui](https://ui.shadcn.com)
+- [Tailwind CSS](https://tailwindcss.com)
 
 ---
 
-# ⭐ Support
+## 🤝 Contributing
 
-If you find this project useful, consider giving it a **⭐ Star** on GitHub.
+Contributions are welcome!
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feat/my-feature`)
+3. Commit your changes (`git commit -m 'feat: add my feature'`)
+4. Push to the branch (`git push origin feat/my-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+Licensed under the **MIT License**.
+
+---
+
+## ⭐ Support
+
+If you find this project useful, please give it a **⭐ Star** on GitHub — it helps a lot!
 
 ---
 
 <p align="center">
-Made with ❤️ using <strong>Next.js</strong>, <strong>Better Auth</strong>, <strong>MongoDB</strong>, <strong>Nodemailer</strong>, and <strong>TypeScript</strong>.
+  Made with ❤️ using <strong>Next.js</strong>, <strong>Better Auth</strong>, <strong>MongoDB</strong>, <strong>Nodemailer</strong>, and <strong>TypeScript</strong>.
 </p>
