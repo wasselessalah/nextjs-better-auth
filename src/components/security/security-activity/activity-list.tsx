@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { ShieldAlert } from "lucide-react";
 
 import {
@@ -7,16 +10,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Pagination from "@/components/ui/pagination";
 
 import type { SecurityActivityEntry } from "@/actions/auth/security/get-security-activity";
 
 import ActivityRow from "./activity-row";
+
+const PAGE_SIZE = 5;
 
 interface Props {
   activities: SecurityActivityEntry[];
 }
 
 export default function ActivityList({ activities }: Props) {
+  const [page, setPage] = useState(1);
+
+  const totalPages = Math.ceil(activities.length / PAGE_SIZE);
+  const paginated = activities.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
   return (
     <Card>
       <CardHeader>
@@ -36,9 +47,18 @@ export default function ActivityList({ activities }: Props) {
             </p>
           </div>
         ) : (
-          activities.map((activity) => (
-            <ActivityRow key={activity.id} activity={activity} />
-          ))
+          <>
+            {paginated.map((activity) => (
+              <ActivityRow key={activity.id} activity={activity} />
+            ))}
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              totalItems={activities.length}
+              pageSize={PAGE_SIZE}
+              onPageChange={setPage}
+            />
+          </>
         )}
       </CardContent>
     </Card>

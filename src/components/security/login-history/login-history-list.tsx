@@ -1,4 +1,5 @@
 import { History } from "lucide-react";
+import type { ReactNode } from "react";
 
 import {
   Card,
@@ -14,9 +15,11 @@ import LoginHistoryRow from "./login-history-row";
 
 interface Props {
   history: LoginHistoryEntry[];
+  /** Optional slot — used to inject the Pagination component */
+  children?: ReactNode;
 }
 
-export default function LoginHistoryList({ history }: Props) {
+export default function LoginHistoryList({ history, children }: Props) {
   return (
     <Card>
       <CardHeader>
@@ -36,9 +39,12 @@ export default function LoginHistoryList({ history }: Props) {
             </p>
           </div>
         ) : (
-          history.map((login) => (
-            <LoginHistoryRow key={login.id} login={login} />
-          ))
+          <>
+            {history.map((login) => (
+              <LoginHistoryRow key={login.id} login={login} />
+            ))}
+            {children}
+          </>
         )}
       </CardContent>
     </Card>

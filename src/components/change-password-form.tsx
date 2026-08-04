@@ -1,8 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Loader2, Lock, CheckCircle2, AlertCircle } from "lucide-react";
+import { useState, useTransition, useMemo } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
+import {
+  CircleAlert,
+  CircleCheck,
+  Loader2,
+  Lock,
+} from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import {
   Card,
   CardContent,
@@ -11,170 +22,152 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { updatePassword } from "@/actions/auth/password-update/password-update";
+
+import PasswordInput from "./password/password-input";
+import PasswordStrengthBar from "./password/password-strength-bar";
+import PasswordTips from "./password/password-tips";
 
 export default function ChangePasswordForm() {
+  const router = useRouter();
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   const passwordsMatch =
     confirmPassword.length === 0 || newPassword === confirmPassword;
 
-  const canSubmit = useMemo(() => {
-    return (
+  const canSubmit = useMemo(
+    () =>
       currentPassword.trim().length > 0 &&
       newPassword.length >= 8 &&
       confirmPassword.length > 0 &&
-      passwordsMatch &&
-      !loading
-    );
-  }, [
-    currentPassword,
-    newPassword,
-    confirmPassword,
-    passwordsMatch,
-    loading,
-  ]);
+      newPassword === confirmPassword &&
+      !isPending,
+    [currentPassword, newPassword, confirmPassword, isPending]
+  );
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
     setError("");
     setSuccess("");
 
-    if (!passwordsMatch) {
-      setError("The new passwords do not match.");
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match.");
       return;
     }
 
-    setLoading(true);
+    if (newPassword.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
 
-    try {
-      const res = await fetch("/api/auth/change-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          currentPassword,
-          newPassword,
-        }),
-      });
+    startTransition(async () => {
+      const result = await updatePassword(currentPassword, newPassword);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message);
+      if (!result.success) {
+        setError(result.message);
+        return;
       }
 
-      setSuccess("Your password has been updated successfully.");
-
+      setSuccess(result.message);
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Unable to update your password."
-      );
-    } finally {
-      setLoading(false);
-    }
+
+      setTimeout(() => router.push("/settings/security"), 1500);
+    });
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Change Password</CardTitle>
-        <CardDescription>
-          Choose a strong password with at least 8 characters.
-        </CardDescription>
-      </CardHeader>
+    <div className="grid gap-6 lg:grid-cols-3">
+      <div className="lg:col-span-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Update Password</CardTitle>
+            <CardDescription>
+              Your current session will stay active after the change.
+            </CardDescription>
+          </CardHeader>
 
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Error */}
           {error && (
             <div className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-              <AlertCircle className="h-4 w-4 shrink-0" />
+              <CircleAlert className="h-4 w-4 shrink-0" />
               {error}
             </div>
           )}
 
+          {/* Success */}
           {success && (
             <div className="flex items-center gap-2 rounded-lg border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-600">
-              <CheckCircle2 className="h-4 w-4 shrink-0" />
+              <CircleCheck className="h-4 w-4 shrink-0" />
               {success}
             </div>
           )}
 
+          {/* Current password */}
           <div className="space-y-2">
-            <Label htmlFor="currentPassword">
-              Current Password
-            </Label>
-
-            <Input
+            <Label htmlFor="currentPassword">Current Password</Label>
+            <PasswordInput
               id="currentPassword"
-              type="password"
+              placeholder="Enter your current password"
               value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
+              onChange={setCurrentPassword}
+              disabled={isPending}
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="newPassword">
-              New Password
-            </Label>
+          <Separator />
 
-            <Input
+          {/* New password */}
+          <div className="space-y-2">
+            <Label htmlFor="newPassword">New Password</Label>
+            <PasswordInput
               id="newPassword"
-              type="password"
+              placeholder="Enter your new password"
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              onChange={setNewPassword}
+              disabled={isPending}
             />
-
-            {newPassword.length > 0 && newPassword.length < 8 && (
-              <p className="text-xs text-destructive">
-                Password must contain at least 8 characters.
-              </p>
-            )}
+            <PasswordStrengthBar password={newPassword} />
           </div>
 
+          {/* Confirm password */}
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">
-              Confirm Password
-            </Label>
-
-            <Input
+            <Label htmlFor="confirmPassword">Confirm New Password</Label>
+            <PasswordInput
               id="confirmPassword"
-              type="password"
+              placeholder="Confirm your new password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={setConfirmPassword}
+              disabled={isPending}
             />
-
             {!passwordsMatch && (
               <p className="text-xs text-destructive">
-                The new passwords do not match.
+                The passwords do not match.
+              </p>
+            )}
+            {passwordsMatch && confirmPassword.length > 0 && (
+              <p className="flex items-center gap-1 text-xs text-green-600">
+                <CircleCheck className="h-3.5 w-3.5" />
+                Passwords match
               </p>
             )}
           </div>
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={!canSubmit}
-          >
-            {loading ? (
+          <Button type="submit" className="w-full" disabled={!canSubmit}>
+            {isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Updating...
+                Updating Password...
               </>
             ) : (
               <>
@@ -184,7 +177,22 @@ export default function ChangePasswordForm() {
             )}
           </Button>
         </form>
+
+        <Separator className="my-6" />
+
+        <div className="text-center">
+          <p className="text-sm text-muted-foreground">
+            Forgot your current password?
+          </p>
+          <Button variant="link" className="mt-1 h-auto p-0">
+            <Link href="/forgot-password">Reset via email instead</Link>
+          </Button>
+        </div>
       </CardContent>
     </Card>
+      </div>
+
+      <PasswordTips newPassword={newPassword} />
+    </div>
   );
 }

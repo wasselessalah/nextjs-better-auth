@@ -77,24 +77,7 @@ export const auth = betterAuth({
         },
       },
     },
-    user: {
-      update: {
-        after: async (user) => {
-          try {
-            const database = await connectDB();
-            await database.collection("securityActivity").insertOne({
-              userId: user.id,
-              type: "password_change",
-              ipAddress: null,
-              userAgent: null,
-              createdAt: new Date(),
-            });
-          } catch (error) {
-            console.error("securityActivity password_change insert failed:", error);
-          }
-        },
-      },
-    },
+
   },
 });
 
