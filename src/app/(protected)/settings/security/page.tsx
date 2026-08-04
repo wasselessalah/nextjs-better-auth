@@ -6,6 +6,7 @@ import ConnectedDevices from "@/components/security/connected-devices";
 import DangerZone from "@/components/security/danger-zone";
 import SecurityTips from "@/components/security/security-tips";
 import SecurityOverview from "@/components/security/security-overview";
+import SecurityLinks from "@/components/security/security-links";
 
 export default async function SecurityPage() {
   const result = await getSessions();
@@ -37,6 +38,9 @@ export default async function SecurityPage() {
         sessionCount={sessions.length}
         emailVerified={true} // or session.user.emailVerified
       />
+
+
+<SecurityLinks />
 
       {/* Connected Devices */}
 

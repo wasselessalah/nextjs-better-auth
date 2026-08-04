@@ -43,7 +43,7 @@ export default function DangerZone() {
 
               <p className="mt-1 text-sm text-muted-foreground">
                 End every active session on browsers, phones, tablets, and other
-                devices connected to your account. You'll need to sign in again
+                devices connected to your account. You ll need to sign in again
                 on those devices.
               </p>
             </div>
@@ -66,7 +66,7 @@ export default function DangerZone() {
               <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                 <li>• Your current device will remain signed in.</li>
                 <li>• All other devices will be logged out immediately.</li>
-                <li>• You'll need to sign in again on those devices.</li>
+                <li>• You ll need to sign in again on those devices.</li>
               </ul>
             </div>
           </div>

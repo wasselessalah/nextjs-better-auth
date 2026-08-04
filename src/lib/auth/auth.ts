@@ -13,9 +13,9 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-     async sendResetPassword({ user, url }) {
-    await sendResetPasswordEmail(user.email, url);
-  },
+    async sendResetPassword({ user, url }) {
+      await sendResetPasswordEmail(user.email, url);
+    },
   },
 
   socialProviders: {
@@ -27,6 +27,28 @@ export const auth = betterAuth({
     github: {
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    },
+  },
+
+  databaseHooks: {
+    session: {
+      create: {
+        after: async (session) => {
+          try {
+            const database = await connectDB();
+            await database.collection("loginHistory").insertOne({
+              userId: session.userId,
+              sessionToken: session.token,
+              ipAddress: session.ipAddress ?? null,
+              userAgent: session.userAgent ?? null,
+              createdAt: session.createdAt ?? new Date(),
+            });
+          } catch (error) {
+            // Non-critical — never block sign-in
+            console.error("loginHistory insert failed:", error);
+          }
+        },
+      },
     },
   },
 });

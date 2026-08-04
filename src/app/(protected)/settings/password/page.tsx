@@ -12,7 +12,6 @@ import {
   Loader2,
 } from "lucide-react";
 
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -48,10 +47,7 @@ export default function PasswordPage() {
     }
 
     startTransition(async () => {
-      const result = await updatePassword(
-        currentPassword,
-        newPassword
-      );
+      const result = await updatePassword(currentPassword, newPassword);
 
       if (!result.success) {
         setError(result.message);
@@ -65,14 +61,14 @@ export default function PasswordPage() {
       setConfirmPassword("");
 
       setTimeout(() => {
-        router.refresh();
+        router.push("/settings/security");
       }, 1500);
     });
   }
 
   return (
     <div className="container mx-auto max-w-2xl py-10">
-      <Button  variant="ghost" className="mb-6">
+      <Button variant="ghost" className="mb-6">
         <Link href="/settings">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Settings
@@ -84,14 +80,11 @@ export default function PasswordPage() {
           <KeyRound className="h-6 w-6 text-primary" />
         </div>
 
-        <h1 className="text-3xl font-bold">
-          Change Password
-        </h1>
+        <h1 className="text-3xl font-bold">Change Password</h1>
 
         <p className="mt-2 text-muted-foreground">
-          Update your password to keep your account secure.
-          Choose a strong password that you don t use anywhere
-          else.
+          Update your password to keep your account secure. Choose a strong
+          password that you don t use anywhere else.
         </p>
       </div>
 
@@ -111,61 +104,45 @@ export default function PasswordPage() {
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="currentPassword">
-            Current Password
-          </Label>
+          <Label htmlFor="currentPassword">Current Password</Label>
 
           <Input
             id="currentPassword"
             type="password"
             placeholder="Enter your current password"
             value={currentPassword}
-            onChange={(e) =>
-              setCurrentPassword(e.target.value)
-            }
+            onChange={(e) => setCurrentPassword(e.target.value)}
             required
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="newPassword">
-            New Password
-          </Label>
+          <Label htmlFor="newPassword">New Password</Label>
 
           <Input
             id="newPassword"
             type="password"
             placeholder="Enter your new password"
             value={newPassword}
-            onChange={(e) =>
-              setNewPassword(e.target.value)
-            }
+            onChange={(e) => setNewPassword(e.target.value)}
             required
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="confirmPassword">
-            Confirm New Password
-          </Label>
+          <Label htmlFor="confirmPassword">Confirm New Password</Label>
 
           <Input
             id="confirmPassword"
             type="password"
             placeholder="Confirm your new password"
             value={confirmPassword}
-            onChange={(e) =>
-              setConfirmPassword(e.target.value)
-            }
+            onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
         </div>
 
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={isPending}
-        >
+        <Button type="submit" className="w-full" disabled={isPending}>
           {isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -184,14 +161,8 @@ export default function PasswordPage() {
           Forgot your current password?
         </p>
 
-        <Button
-          
-          variant="link"
-          className="mt-2 h-auto p-0"
-        >
-          <Link href="/forgot-password">
-            Reset your password
-          </Link>
+        <Button variant="link" className="mt-2 h-auto p-0">
+          <Link href="/forgot-password">Reset your password</Link>
         </Button>
       </div>
     </div>
