@@ -34,6 +34,8 @@ It includes secure authentication with email/password, Google & GitHub OAuth, em
 * 💻 Connected Devices Management
 * 🔒 Logout From Individual Devices
 * 🌐 Logout From All Devices
+* 📋 Persistent Login History
+* 🔍 Security Activity Audit Log
 * ⚡ Server Actions
 * 📱 Fully Responsive
 * 🎨 Modern UI with shadcn/ui
@@ -89,6 +91,24 @@ It includes secure authentication with email/password, Google & GitHub OAuth, em
 - ✅ Confirmation Dialogs
 - ✅ Account Security Overview
 
+## 📋 Login History
+- ✅ Persistent Login History (survives session expiry)
+- ✅ Stored in dedicated MongoDB `loginHistory` collection
+- ✅ Recorded on every sign-in via `databaseHooks`
+- ✅ Browser, OS & Device parsed from User-Agent
+- ✅ IP Address tracking
+- ✅ Live client-side search (browser, OS, IP)
+- ✅ Current session highlighted
+- ✅ Human-readable timestamps (Today, Yesterday, date)
+
+## 🔍 Security Activity
+- ✅ Full audit log of all security events
+- ✅ Tracks: Sign In, Sign Out, Password Change
+- ✅ Stored in dedicated MongoDB `securityActivity` collection
+- ✅ Colour-coded event badges (green / orange / blue)
+- ✅ Stats cards: Total Events, Sign Ins, Sign Outs, Password Changes
+- ✅ Empty state with guidance
+
 ## Developer Experience
 
 - ✅ Next.js App Router
@@ -128,6 +148,8 @@ src
 │       │
 │       ├── security
 │       │   ├── get-sessions.ts
+│       │   ├── get-login-history.ts
+│       │   ├── get-security-activity.ts
 │       │   ├── revoke-session.ts
 │       │   └── revoke-all-sessions.ts
 │       │   
@@ -160,7 +182,11 @@ src
 │   │   │   ├── profile
 │   │   │   ├── password
 │   │   │   └── security
-│   │   │   └── page.tsx
+│   │   │       ├── page.tsx
+│   │   │       ├── login-history
+│   │   │       │   └── page.tsx
+│   │   │       └── security-activity
+│   │   │           └── page.tsx
 │   │   │
 │   │   ├── verify-email
 │   │   └── layout.tsx
@@ -261,17 +287,17 @@ Sign In
 User Login
       │
       ▼
-Create Session
-      │
-      ▼
-Store Session
+Create Session ──► databaseHooks.session.create.after
+      │                  │
+      ▼                  ├──► Insert into `loginHistory`
+Store Session            └──► Insert into `securityActivity` (type: sign_in)
       │
       ▼
 View Connected Devices
       │
       ▼
-Revoke One Session
-      │
+Revoke One Session ──► databaseHooks.session.delete.after
+      │                      └──► Insert into `securityActivity` (type: sign_out)
       ├──────────────► Logout Selected Device
       │
       ▼
@@ -279,6 +305,36 @@ Logout All Devices
       │
       ▼
 Revoke All Sessions
+```
+
+---
+# 📋 Login History & Security Activity Flow
+
+```text
+Sign In
+   │
+   ▼
+databaseHooks.session.create.after
+   │
+   ├──► loginHistory collection
+   │       userId, sessionToken, ipAddress, userAgent, createdAt
+   │
+   └──► securityActivity collection
+           userId, type: "sign_in", ipAddress, userAgent, createdAt
+
+Sign Out / Session Revoked
+   │
+   ▼
+databaseHooks.session.delete.after
+   └──► securityActivity collection
+           userId, type: "sign_out", createdAt
+
+Password Changed
+   │
+   ▼
+databaseHooks.user.update.after
+   └──► securityActivity collection
+           userId, type: "password_change", createdAt
 ```
 
 ---
@@ -305,6 +361,9 @@ Revoke All Sessions
 - Environment Variable Validation
 - TypeScript Type Safety
 - Secure Server Actions
+- Persistent Login History (survives session expiry/revocation)
+- Security Activity Audit Log (sign-in, sign-out, password changes)
+- Event-driven logging via `databaseHooks` (never blocks auth flow)
 ---
 
 # 📦 Installation
