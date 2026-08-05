@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { connectDB } from "@/lib/db";
 
-export type ActivityType = "sign_in" | "sign_out" | "password_change";
+export type ActivityType = "sign_in" | "sign_out" | "password_change" | "email_change";
 
 export interface SecurityActivityEntry {
   id: string;
@@ -26,6 +26,7 @@ export interface SecurityActivityResult {
   signInCount: number;
   signOutCount: number;
   passwordChangeCount: number;
+  emailChangeCount: number;
 }
 
 function formatDate(date: Date): string {
@@ -54,7 +55,7 @@ function parseActivity(doc: any): SecurityActivityEntry {
   const browserName = ua.getBrowser().name ?? "Unknown";
   const browserVersion = ua.getBrowser().version ?? "";
   const browser =
-    doc.type === "password_change"
+    doc.type === "password_change" || doc.type === "email_change"
       ? "—"
       : browserVersion
       ? `${browserName} ${browserVersion.split(".")[0]}`
@@ -63,7 +64,7 @@ function parseActivity(doc: any): SecurityActivityEntry {
   const osName = ua.getOS().name ?? "Unknown";
   const osVersion = ua.getOS().version ?? "";
   const os =
-    doc.type === "password_change"
+    doc.type === "password_change" || doc.type === "email_change"
       ? "—"
       : osVersion
       ? `${osName} ${osVersion}`
@@ -103,6 +104,7 @@ export async function getSecurityActivity(): Promise<SecurityActivityResult> {
         signInCount: 0,
         signOutCount: 0,
         passwordChangeCount: 0,
+        emailChangeCount: 0,
       };
     }
 
@@ -125,6 +127,9 @@ export async function getSecurityActivity(): Promise<SecurityActivityResult> {
       passwordChangeCount: activities.filter(
         (a) => a.type === "password_change"
       ).length,
+      emailChangeCount: activities.filter(
+        (a) => a.type === "email_change"
+      ).length,
     };
   } catch (error) {
     console.error("getSecurityActivity error:", error);
@@ -135,6 +140,7 @@ export async function getSecurityActivity(): Promise<SecurityActivityResult> {
       signInCount: 0,
       signOutCount: 0,
       passwordChangeCount: 0,
+      emailChangeCount: 0,
     };
   }
 }

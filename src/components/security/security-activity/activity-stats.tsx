@@ -5,6 +5,7 @@ interface Props {
   signInCount: number;
   signOutCount: number;
   passwordChangeCount: number;
+  emailChangeCount: number;
 }
 
 export default function ActivityStats({
@@ -12,6 +13,7 @@ export default function ActivityStats({
   signInCount,
   signOutCount,
   passwordChangeCount,
+  emailChangeCount,
 }: Props) {
   return (
     <div className="mb-6 grid gap-4 md:grid-cols-4">
@@ -42,9 +44,9 @@ export default function ActivityStats({
 
       <Card>
         <CardContent className="p-6">
-          <p className="text-sm text-muted-foreground">Password Changes</p>
+          <p className="text-sm text-muted-foreground">Account Changes</p>
           <h2 className="mt-2 text-3xl font-bold text-blue-600">
-            {passwordChangeCount}
+            {passwordChangeCount + emailChangeCount}
           </h2>
         </CardContent>
       </Card>

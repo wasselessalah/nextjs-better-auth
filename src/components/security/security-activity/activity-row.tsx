@@ -1,4 +1,4 @@
-import { LogIn, LogOut, KeyRound, Laptop, Smartphone, Tablet } from "lucide-react";
+import { LogIn, LogOut, KeyRound, Laptop, Smartphone, Tablet, Mail } from "lucide-react";
 
 import type {
   SecurityActivityEntry,
@@ -41,6 +41,14 @@ export const ACTIVITY_CONFIG: Record<ActivityType, ActivityConfig> = {
     badgeBg: "bg-blue-500/10",
     badgeText: "text-blue-600",
   },
+  email_change: {
+    label: "Email Changed",
+    description: "Account email address was updated",
+    iconBg: "bg-purple-500/10",
+    iconColor: "text-purple-600",
+    badgeBg: "bg-purple-500/10",
+    badgeText: "text-purple-600",
+  },
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -48,7 +56,13 @@ export const ACTIVITY_CONFIG: Record<ActivityType, ActivityConfig> = {
 function ActivityIcon({ type }: { type: ActivityType }) {
   const config = ACTIVITY_CONFIG[type];
   const Icon =
-    type === "sign_in" ? LogIn : type === "sign_out" ? LogOut : KeyRound;
+    type === "sign_in"
+      ? LogIn
+      : type === "sign_out"
+      ? LogOut
+      : type === "password_change"
+      ? KeyRound
+      : Mail;
 
   return (
     <div className={`rounded-xl max-h-14 ${config.iconBg} p-3`}>
@@ -105,7 +119,7 @@ export default function ActivityRow({ activity }: Props) {
             </p>
 
             <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
-              {activity.type !== "password_change" && (
+              {activity.type !== "password_change" && activity.type !== "email_change" && (
                 <>
                   <span>🖥 {activity.browser}</span>
                   <span>⚙️ {activity.os}</span>

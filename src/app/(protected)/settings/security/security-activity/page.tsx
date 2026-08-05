@@ -1,7 +1,8 @@
 import { ShieldAlert, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 
 import { getSecurityActivity } from "@/actions/auth/security/get-security-activity";
 
@@ -14,12 +15,15 @@ export default async function SecurityActivityPage() {
 
   return (
     <div className="container mx-auto max-w-5xl py-10">
-      <Button variant="ghost" className="mb-6">
-        <Link href="/settings/security" className="flex">
+      <div className="mb-6">
+        <Link 
+          href="/settings/security" 
+          className={cn(buttonVariants({ variant: "ghost" }), "flex w-fit items-center")}
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Security
         </Link>
-      </Button>
+      </div>
 
       <section className="mb-8 flex items-start gap-4">
         <div className="rounded-2xl bg-primary/10 p-4">
@@ -41,6 +45,7 @@ export default async function SecurityActivityPage() {
         signInCount={result.signInCount}
         signOutCount={result.signOutCount}
         passwordChangeCount={result.passwordChangeCount}
+        emailChangeCount={result.emailChangeCount}
       />
 
       <ActivityList activities={activities} />
