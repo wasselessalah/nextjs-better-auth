@@ -43,17 +43,14 @@ function Navbar() {
               </Link>
 
               <DropdownMenu>
-                <DropdownMenuTrigger >
-                  <Button
-                    variant="ghost"
-                    className="h-10 w-10 rounded-full p-0 transition-all hover:scale-105 hover:bg-accent"
-                  >
-                    <Avatar className="h-9 w-9 border border-border shadow-sm">
-                      <AvatarFallback className="bg-primary font-semibold text-primary-foreground">
-                        {session.user.name.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
+                <DropdownMenuTrigger 
+                  className="inline-flex items-center justify-center h-10 w-10 rounded-full p-0 transition-all hover:scale-105 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Avatar className="h-9 w-9 border border-border shadow-sm">
+                    <AvatarFallback className="bg-primary font-semibold text-primary-foreground">
+                      {session.user.name.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent

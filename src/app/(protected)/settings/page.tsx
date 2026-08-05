@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { ChevronRight, Lock, Shield, User } from "lucide-react";
+import { ChevronRight, Lock, Mail, Shield, User } from "lucide-react";
 
 import {
   Card,
   CardContent,
-  
+
 } from "@/components/ui/card";
 
 export default function SettingsPage() {
@@ -38,7 +38,6 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
         </Link>
-
         <Link href="/settings/password">
           <Card className="transition-colors hover:border-primary cursor-pointer">
             <CardContent className="flex items-center justify-between p-6">
@@ -51,6 +50,27 @@ export default function SettingsPage() {
                   <h2 className="font-semibold">Password</h2>
                   <p className="text-sm text-muted-foreground">
                     Change your account password.
+                  </p>
+                </div>
+              </div>
+
+              <ChevronRight className="h-5 w-5 text-muted-foreground" />
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/settings/email">
+          <Card className="cursor-pointer transition-all hover:border-primary hover:shadow-sm">
+            <CardContent className="flex items-center justify-between p-6">
+              <div className="flex items-center gap-4">
+                <div className="rounded-lg bg-primary/10 p-3">
+                  <Mail className="h-5 w-5 text-primary" />
+                </div>
+
+                <div>
+                  <h2 className="font-semibold">Email</h2>
+
+                  <p className="text-sm text-muted-foreground">
+                    Change your email address and manage email verification.
                   </p>
                 </div>
               </div>

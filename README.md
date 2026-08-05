@@ -456,5 +456,6 @@ If you find this project useful, please give it a **⭐ Star** on GitHub — it 
 ---
 
 <p align="center">
-  Made with ❤️ using <strong>Next.js</strong>, <strong>Better Auth</strong>, <strong>MongoDB</strong>, <strong>Nodemailer</strong>, and <strong>TypeScript</strong>.
+  Made with ❤️ by <strong>Essalah Wassel</strong>
+  using <strong>Next.js</strong>, <strong>Better Auth</strong>, <strong>MongoDB</strong>, <strong>Nodemailer</strong>, and <strong>TypeScript</strong>.
 </p>
