@@ -3,6 +3,7 @@ import { hashOTP } from "@/lib/auth/generateOtp";
 import { connectDB } from "@/lib/db";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
+import { sendEmailChangeNotification } from "@/lib/email/notify-old-email";
 
 const db = await connectDB();
 
@@ -102,7 +103,14 @@ export async function POST(req: NextRequest) {
       }
     );
 
-    // 7. Log to security activity (non-critical)
+    // 7. Notify the old email address about the change
+    try {
+      await sendEmailChangeNotification(user.email, newEmail);
+    } catch (emailError) {
+      console.error("Failed to send email change notification:", emailError);
+    }
+
+    // 8. Log to security activity (non-critical)
     try {
       await db.collection("securityActivity").insertOne({
         userId: session.user.id,
