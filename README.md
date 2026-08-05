@@ -39,6 +39,7 @@ Includes secure email/password auth, Google & GitHub OAuth, OTP email verificati
 | 🔍 | Security Activity Audit Log |
 | 🔒 | Password Strength Meter |
 | 📄 | Pagination on all list views |
+| ✉️ | Change Email with OTP & Security Alerts |
 | ⚡ | Server Actions Architecture |
 | 📱 | Fully Responsive UI |
 | 🎨 | Modern UI with shadcn/ui |
@@ -73,6 +74,8 @@ Includes secure email/password auth, Google & GitHub OAuth, OTP email verificati
 - Verification email template
 - Forgot Password email template
 - Reset Password email template
+- Change Email verification template
+- Security Alert template (sent to old email upon change)
 - HTML email templates
 
 ### 🛡️ Security Dashboard
@@ -98,10 +101,10 @@ Includes secure email/password auth, Google & GitHub OAuth, OTP email verificati
 
 ### 🔍 Security Activity
 - Full audit log of all security events
-- Tracks: Sign In, Sign Out, Password Change
+- Tracks: Sign In, Sign Out, Password Change, Email Change
 - Dedicated MongoDB `securityActivity` collection
-- Colour-coded badges (🟢 sign in · 🟠 sign out · 🔵 password change)
-- Stats cards: Total Events, Sign Ins, Sign Outs, Password Changes
+- Colour-coded badges (🟢 sign in · 🟠 sign out · 🔵 password change · 🟣 email change)
+- Stats cards: Total Events, Sign Ins, Sign Outs, Password/Email Changes
 - Paginated (5 per page)
 
 ### 🔒 Password Change Page
@@ -157,6 +160,10 @@ src
 │       │   ├── revoke-session.ts
 │       │   └── revoke-all-sessions.ts
 │       │
+│       ├── change-email
+│       │   ├── request-change-email.ts
+│       │   └── verify-change-email.ts
+│       │
 │       ├── password-update
 │       │   └── password-update.ts
 │       │
@@ -184,6 +191,8 @@ src
 │   │   ├── dashboard
 │   │   ├── settings
 │   │   │   ├── profile
+│   │   │   ├── email
+│   │   │   │   └── page.tsx
 │   │   │   ├── password
 │   │   │   └── security
 │   │   │       ├── page.tsx
@@ -197,6 +206,11 @@ src
 │   │
 │   ├── api
 │   │   └── auth
+│   │       ├── change-email
+│   │       │   ├── request
+│   │       │   │   └── route.ts
+│   │       │   └── verify
+│   │       │       └── route.ts
 │   │
 │   ├── error.tsx
 │   ├── loading.tsx
@@ -234,12 +248,16 @@ src
 │   │   ├── pagination.tsx       ← shared paginator
 │   │   └── ... (shadcn/ui)
 │   │
+│   ├── change-email-form.tsx
 │   └── change-password-form.tsx
 │
 ├── lib
 │   ├── auth
 │   │   └── auth.ts              ← databaseHooks config
 │   ├── email
+│   │   ├── change-email.ts
+│   │   ├── notify-old-email.ts
+│   │   └── reset-password.ts
 │   ├── mailer.ts
 │   └── db.ts
 │
@@ -306,6 +324,10 @@ Revoke Session ──► databaseHooks.session.delete.after
 
 Password Changed (via updatePassword action)
    └──► securityActivity { userId, type: "password_change", ip, userAgent, createdAt }
+
+Email Changed (via verifyChangeEmail action)
+   ├──► securityActivity { userId, type: "email_change", ip, userAgent, createdAt }
+   └──► sendEmailChangeNotification to old email
 ```
 
 ---
