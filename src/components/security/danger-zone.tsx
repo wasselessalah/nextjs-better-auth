@@ -1,4 +1,7 @@
 import { TriangleAlert } from "lucide-react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 
 import {
   Card,
@@ -50,6 +53,30 @@ export default function DangerZone() {
 
             <div className="shrink-0">
               <SignOutAllDevices />
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-destructive/20 bg-background p-5">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h3 className="font-semibold text-destructive">
+                Delete Account
+              </h3>
+
+              <p className="mt-1 text-sm text-muted-foreground">
+                Permanently remove your account and all associated data from our servers. 
+                This action is irreversible.
+              </p>
+            </div>
+
+            <div className="shrink-0">
+              <Link 
+                href="/settings/security/delete-account"
+                className={cn(buttonVariants({ variant: "destructive" }))}
+              >
+                Delete Account
+              </Link>
             </div>
           </div>
         </div>
