@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SocialAuthButtons } from "@/components/auth/social-auth-buttons";
@@ -23,6 +24,7 @@ export default function SignInPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const [error, setError] = useState("");
 
@@ -42,6 +44,7 @@ export default function SignInPage() {
       const { redirectTo } = await emailSignIn({
         email,
         password,
+        rememberMe,
       });
 
       router.replace(redirectTo);
@@ -118,6 +121,23 @@ export default function SignInPage() {
                 minLength={8}
                 required
               />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="remember-me"
+                checked={rememberMe}
+                onCheckedChange={(checked) =>
+                  setRememberMe(checked === true)
+                }
+                disabled={loadingProvider !== null}
+              />
+              <Label
+                htmlFor="remember-me"
+                className="cursor-pointer select-none text-sm font-normal text-muted-foreground"
+              >
+                Remember me on this device
+              </Label>
             </div>
           </CardContent>
 

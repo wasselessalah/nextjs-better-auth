@@ -5,6 +5,7 @@ import { signIn } from "@/lib/auth/auth-client";
 interface EmailSignInPayload {
   email: string;
   password: string;
+  rememberMe?: boolean;
 }
 
 interface EmailSignInResult {
@@ -14,10 +15,12 @@ interface EmailSignInResult {
 export async function emailSignIn({
   email,
   password,
+  rememberMe,
 }: EmailSignInPayload): Promise<EmailSignInResult> {
   const result = await signIn.email({
     email,
     password,
+    rememberMe,
   });
 
   if (result.error) {
