@@ -40,6 +40,8 @@ Includes secure email/password auth, Google & GitHub OAuth, OTP email verificati
 | 🔒 | Password Strength Meter |
 | 📄 | Pagination on all list views |
 | ✉️ | Change Email with OTP & Security Alerts |
+| 🗑️ | Secure Account Deletion |
+| 💾 | Remember Me Functionality |
 | ⚡ | Server Actions Architecture |
 | 📱 | Fully Responsive UI |
 | 🎨 | Modern UI with shadcn/ui |
@@ -51,6 +53,7 @@ Includes secure email/password auth, Google & GitHub OAuth, OTP email verificati
 
 ### Authentication
 - Email & Password Sign Up / Sign In
+- Remember Me functionality (persistent sessions)
 - Google OAuth
 - GitHub OAuth
 - Logout (single device or all devices)
@@ -87,6 +90,7 @@ Includes secure email/password auth, Google & GitHub OAuth, OTP email verificati
 - IP address display
 - Session creation & last activity timestamps
 - Confirmation dialogs before destructive actions
+- Secure account deletion (danger zone) with password verification
 
 ### 📋 Login History
 - Permanent record (survives session expiry/revocation)
