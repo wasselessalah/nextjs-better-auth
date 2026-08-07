@@ -2,6 +2,7 @@
 
 <p align="center">
   A production-ready authentication starter built with <strong>Next.js 15</strong>, <strong>Better Auth</strong>, <strong>MongoDB</strong>, and <strong>Nodemailer</strong>.
+  Now featuring new-device login alerts and IP-based rate limiting.
 </p>
 
 <p align="center">
@@ -42,6 +43,8 @@ Includes secure email/password auth, Google & GitHub OAuth, OTP email verificati
 | ✉️ | Change Email with OTP & Security Alerts |
 | 🗑️ | Secure Account Deletion |
 | 💾 | Remember Me Functionality |
+| 🔔 | New Device Login Email Alert |
+| 🚦 | IP-based Login Rate Limiting |
 | ⚡ | Server Actions Architecture |
 | 📱 | Fully Responsive UI |
 | 🎨 | Modern UI with shadcn/ui |
@@ -59,6 +62,8 @@ Includes secure email/password auth, Google & GitHub OAuth, OTP email verificati
 - Logout (single device or all devices)
 - Session Management
 - Protected Routes via Middleware
+- **IP-based rate limiting** on login (5 attempts / 15 min — sliding window, zero dependencies)
+- **New device login alert** — email sent automatically when a sign-in is detected from an unrecognised User-Agent
 
 ### Email Verification
 - 6-digit OTP code
@@ -79,6 +84,7 @@ Includes secure email/password auth, Google & GitHub OAuth, OTP email verificati
 - Reset Password email template
 - Change Email verification template
 - Security Alert template (sent to old email upon change)
+- **New Device Login Alert** template (browser, OS, IP, timestamp + fraud warning block)
 - HTML email templates
 
 ### 🛡️ Security Dashboard
@@ -257,11 +263,13 @@ src
 │
 ├── lib
 │   ├── auth
-│   │   └── auth.ts              ← databaseHooks config
+│   │   └── auth.ts              ← databaseHooks config (new-device detection)
 │   ├── email
 │   │   ├── change-email.ts
+│   │   ├── new-device-login.ts  ← new device alert email template
 │   │   ├── notify-old-email.ts
 │   │   └── reset-password.ts
+│   ├── rate-limiter.ts          ← in-memory sliding-window rate limiter
 │   ├── mailer.ts
 │   └── db.ts
 │
@@ -315,10 +323,22 @@ Create New Password → Sign In
 User Signs In
    │
    ▼
+POST /api/auth/sign-in/email
+   │
+   ▼
+Rate Limiter (IP, 5 req / 15 min sliding window)
+   │
+   ├── BLOCKED ──► 429 Too Many Requests + Retry-After header
+   │
+   └── ALLOWED ──► better-auth sign-in handler
+                        │
+                        ▼
 Create Session ──► databaseHooks.session.create.after
    │                       │
    │                       ├──► loginHistory    { userId, sessionToken, ip, userAgent, createdAt }
-   │                       └──► securityActivity { userId, type: "sign_in", ip, userAgent, createdAt }
+   │                       ├──► securityActivity { userId, type: "sign_in", ip, userAgent, createdAt }
+   │                       └──► New device? (userAgent not seen before for this user)
+   │                                └──► sendNewDeviceLoginEmail  { browser, os, ip, timestamp }
    ▼
 Session Active
    │
@@ -349,6 +369,8 @@ Email Changed (via verifyChangeEmail action)
 - Persistent login history (survives session expiry)
 - Security activity audit log (sign-in, sign-out, password changes)
 - Event-driven logging via `databaseHooks` (non-blocking — never interrupts auth flow)
+- **IP-based rate limiting** on `/api/auth/sign-in/email` — 5 attempts per 15 min (sliding window, in-memory, zero external deps)
+- **New device login email alert** — fires when a User-Agent is seen for the first time per user account
 - TypeScript strict mode — zero type errors
 - Server Actions for all mutations
 
@@ -412,15 +434,17 @@ npm run lint
 
 ---
 
-## 📈 Recommended Rate Limits
+## 📈 Rate Limiting
 
-| Action | Recommended Limit |
-|--------|------------------|
-| Sign Up | 5 requests / hour / IP |
-| Sign In | 5 failed attempts / 15 min |
-| Verify OTP | 5 attempts |
-| Forgot Password | 3 requests / hour |
-| Reset Password | Token expires after 10 min |
+| Action | Limit | Implementation |
+|--------|-------|----------------|
+| **Sign In** | **5 attempts / 15 min / IP** | **✅ Implemented** — sliding window in `src/lib/rate-limiter.ts`, enforced in `[...all]/route.ts` |
+| Sign Up | 5 requests / hour / IP | Recommended |
+| Verify OTP | 5 attempts | Recommended |
+| Forgot Password | 3 requests / hour | Recommended |
+| Reset Password | Token expires after 10 min | ✅ Implemented via better-auth |
+
+> **Implementation note:** The rate limiter uses an in-memory sliding-window `Map`. It requires no external dependencies and works perfectly for single-instance deployments. For multi-instance or serverless environments, swap the `store` for [Upstash Redis](https://upstash.com) — the `rateLimit()` interface remains identical.
 
 ---
 
