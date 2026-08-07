@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
 import { connectDB } from "@/lib/db";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
@@ -50,8 +51,9 @@ export async function POST(req: NextRequest) {
     const userId = session.user.id;
 
     // Remove from all related collections
+    // Note: the `user` collection uses ObjectId as _id; the rest store userId as a plain string.
     await Promise.all([
-      db.collection("user").deleteOne({ _id: userId }),
+      db.collection("user").deleteOne({ _id: new ObjectId(userId) }),
       db.collection("account").deleteMany({ userId: userId }),
       db.collection("session").deleteMany({ userId: userId }),
       db.collection("loginHistory").deleteMany({ userId: userId }),
