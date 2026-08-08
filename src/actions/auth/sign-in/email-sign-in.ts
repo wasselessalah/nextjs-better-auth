@@ -30,7 +30,7 @@ export async function emailSignIn({
   }
 
   // Check if 2FA is required
-  if ((result.data as any)?.twoFactorRedirect) {
+  if ((result.data as { twoFactorRedirect?: boolean })?.twoFactorRedirect) {
     return {
       redirectTo: "/verify-2fa",
     };
@@ -65,6 +65,12 @@ export async function emailSignIn({
       redirectTo: `/verify-email?email=${encodeURIComponent(
         user.email
       )}`,
+    };
+  }
+
+  if (user.role === "admin") {
+    return {
+      redirectTo: "/admin/dashboard",
     };
   }
 

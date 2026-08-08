@@ -1,5 +1,5 @@
 import { createAuthClient } from "better-auth/react";
-import { twoFactorClient } from "better-auth/client/plugins";
+import { twoFactorClient, adminClient } from "better-auth/client/plugins";
 
 export const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL!,
@@ -7,6 +7,7 @@ export const authClient = createAuthClient({
     twoFactorClient({
       twoFactorPage: "/verify-2fa",
     }),
+    adminClient(),
   ],
 });
 

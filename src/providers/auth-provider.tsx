@@ -63,11 +63,26 @@ export function AuthProvider({
     }
 
     // Logged in and verified
-    if (
-      session.user.emailVerified &&
-      pathname === "/verify-email"
-    ) {
-      router.replace("/dashboard");
+    if (session.user.emailVerified) {
+      if (pathname === "/verify-email" || PUBLIC_ROUTES.includes(pathname)) {
+        if (session.user.role === "admin") {
+          router.replace("/admin/dashboard");
+        } else {
+          router.replace("/dashboard");
+        }
+        return;
+      }
+
+      // Role-based protection
+      if (pathname.startsWith("/admin") && session.user.role !== "admin") {
+        router.replace("/dashboard");
+        return;
+      }
+
+      if (pathname.startsWith("/dashboard") && session.user.role === "admin") {
+        router.replace("/admin/dashboard");
+        return;
+      }
     }
   }, [session, isPending, pathname, router]);
 

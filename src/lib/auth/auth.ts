@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { twoFactor } from "better-auth/plugins";
+import { twoFactor, admin } from "better-auth/plugins";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { UAParser } from "ua-parser-js";
@@ -127,6 +127,7 @@ export const auth = betterAuth({
     twoFactor({
       issuer: "better-auth nextjs",
     }),
+    admin(),
   ],
 });
 
