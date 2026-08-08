@@ -22,7 +22,7 @@
 
 A complete, production-ready authentication starter using the **Next.js 15 App Router**, **Better Auth**, and **MongoDB**.
 
-Includes secure email/password auth, Google & GitHub OAuth, OTP email verification, password recovery, a full security dashboard with persistent login history, security activity audit logs, paginated connected devices, and a modular component architecture powered by **Server Actions**.
+Includes secure email/password auth, Google & GitHub OAuth, OTP email verification, password recovery, Two-Factor Authentication (2FA), a full security dashboard with persistent login history, security activity audit logs, paginated connected devices, Role-Based Access Control with dedicated Admin/User dashboards, and a modular component architecture powered by **Server Actions**.
 
 ---
 
@@ -45,6 +45,9 @@ Includes secure email/password auth, Google & GitHub OAuth, OTP email verificati
 | 💾 | Remember Me Functionality |
 | 🔔 | New Device Login Email Alert |
 | 🚦 | IP-based Login Rate Limiting |
+| 🛡️ | Two-Factor Authentication (2FA) |
+| 👥 | Role-Based Access Control (Admin/User) |
+| 🎛️ | Dedicated Admin & User Dashboards |
 | ⚡ | Server Actions Architecture |
 | 📱 | Fully Responsive UI |
 | 🎨 | Modern UI with shadcn/ui |
@@ -371,6 +374,8 @@ Email Changed (via verifyChangeEmail action)
 - Event-driven logging via `databaseHooks` (non-blocking — never interrupts auth flow)
 - **IP-based rate limiting** on `/api/auth/sign-in/email` — 5 attempts per 15 min (sliding window, in-memory, zero external deps)
 - **New device login email alert** — fires when a User-Agent is seen for the first time per user account
+- **Two-Factor Authentication (2FA)** — TOTP/Authenticator App with Backup Codes support
+- **Role-Based Access Control (RBAC)** — Native admin/user roles with dedicated dashboards and hard client/server route protection
 - TypeScript strict mode — zero type errors
 - Server Actions for all mutations
 
