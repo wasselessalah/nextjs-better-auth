@@ -3,7 +3,11 @@ import { rateLimit } from "@/lib/rate-limiter";
 import { toNextJsHandler } from "better-auth/next-js";
 import { NextRequest, NextResponse } from "next/server";
 
-const SIGN_IN_PATH = "/api/auth/sign-in/email";
+const RATE_LIMITED_PATHS = [
+  "/api/auth/sign-in/email",
+  "/api/auth/two-factor/verify-totp",
+  "/api/auth/two-factor/verify-backup-code",
+];
 
 /** 5 attempts per IP per 15 minutes */
 const RATE_LIMIT_CONFIG = {
@@ -16,15 +20,20 @@ const { GET, POST: betterAuthPOST } = toNextJsHandler(auth);
 async function POST(req: NextRequest) {
   const url = new URL(req.url);
 
-  if (url.pathname === SIGN_IN_PATH) {
+  if (RATE_LIMITED_PATHS.includes(url.pathname)) {
     // Prefer the real client IP forwarded by proxies, fall back to direct IP.
     const ip =
       req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
       req.headers.get("x-real-ip") ??
       "anonymous";
 
+    // Use a separate rate limit bucket for 2FA
+    const limitKey = url.pathname.includes("two-factor") 
+      ? `2fa:${ip}` 
+      : `login:${ip}`;
+
     const { allowed, remaining, resetAt } = rateLimit(
-      `login:${ip}`,
+      limitKey,
       RATE_LIMIT_CONFIG
     );
 
@@ -33,7 +42,7 @@ async function POST(req: NextRequest) {
 
       return NextResponse.json(
         {
-          error: "Too many login attempts. Please try again later.",
+          error: "Too many attempts. Please try again later.",
           retryAfter: retryAfterSeconds,
         },
         {

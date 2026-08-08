@@ -29,6 +29,13 @@ export async function emailSignIn({
     );
   }
 
+  // Check if 2FA is required
+  if ((result.data as any)?.twoFactorRedirect) {
+    return {
+      redirectTo: "/verify-2fa",
+    };
+  }
+
   const user = result.data?.user;
 
   if (!user) {

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, Lock, Mail, Shield, User } from "lucide-react";
+import { ChevronRight, Lock, Mail, Shield, ShieldCheck, User } from "lucide-react";
 
 import {
   Card,
@@ -71,6 +71,26 @@ export default function SettingsPage() {
 
                   <p className="text-sm text-muted-foreground">
                     Change your email address and manage email verification.
+                  </p>
+                </div>
+              </div>
+
+              <ChevronRight className="h-5 w-5 text-muted-foreground" />
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/settings/2fa">
+          <Card className="transition-colors hover:border-primary cursor-pointer">
+            <CardContent className="flex items-center justify-between p-6">
+              <div className="flex items-center gap-4">
+                <div className="rounded-lg bg-primary/10 p-3">
+                  <ShieldCheck className="h-5 w-5 text-primary" />
+                </div>
+
+                <div>
+                  <h2 className="font-semibold">Two-Factor Authentication (2FA)</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Add an extra layer of security to your account.
                   </p>
                 </div>
               </div>
