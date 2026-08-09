@@ -42,6 +42,12 @@ function Navbar() {
                 </Button>
               </Link>
 
+              <Link href="/help">
+                <Button variant="ghost" className="font-medium">
+                  Help
+                </Button>
+              </Link>
+
               <DropdownMenu>
                 <DropdownMenuTrigger 
                   className="inline-flex items-center justify-center h-10 w-10 rounded-full p-0 transition-all hover:scale-105 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -95,6 +101,12 @@ function Navbar() {
             </>
           ) : (
             <>
+              <Link href="/help">
+                <Button variant="ghost" className="font-medium">
+                  Help
+                </Button>
+              </Link>
+
               <Link href="/sign-in">
                 <Button variant="ghost" className="font-medium">
                   Log in
