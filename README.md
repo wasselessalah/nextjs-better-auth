@@ -26,6 +26,58 @@ Includes secure email/password auth, Google & GitHub OAuth, OTP email verificati
 
 ---
 
+## 📸 Platform Previews & Features
+
+### 🔐 Authentication Flow
+A complete, secure authentication flow including login, registration, and OTP email verification. It supports email/password and OAuth (Google & GitHub).
+<p align="center">
+  <img src="./src/assets/platform-screenshot/loginAuth.png" width="45%" alt="Login" />
+  <img src="./src/assets/platform-screenshot/registerAuth.png" width="45%" alt="Register" />
+</p>
+
+### 🎛️ User Dashboard
+A clean and responsive dashboard showcasing the user's role, personal information, and quick access to account settings via an intuitive dropdown menu.
+<p align="center">
+  <img src="./src/assets/platform-screenshot/dashboardAuth.png" width="45%" alt="Dashboard" />
+  <img src="./src/assets/platform-screenshot/dropDownUserAuth.png" width="45%" alt="User Dropdown" />
+</p>
+
+### 🛡️ Security Dashboard
+A comprehensive security hub where users can monitor their account's safety. It displays active sessions, connected devices, and allows users to sign out from all other devices remotely.
+<p align="center">
+  <img src="./src/assets/platform-screenshot/securityPageAuth.png" width="45%" alt="Security Overview" />
+  <img src="./src/assets/platform-screenshot/securityPage2Auth.png" width="45%" alt="Security Settings" />
+</p>
+
+### 📱 Two-Factor Authentication (2FA)
+Enhance account security with TOTP-based Two-Factor Authentication. Users can scan a QR code with an Authenticator app, verify OTPs, and generate recovery backup codes.
+<p align="center">
+  <img src="./src/assets/platform-screenshot/2faPageAuth.png" width="45%" alt="2FA Settings" />
+  <img src="./src/assets/platform-screenshot/qrCode2fa.png" width="45%" alt="2FA QR Code" />
+</p>
+
+### ⚙️ Account Management
+Secure interfaces for sensitive account operations, such as changing your password (with real-time strength meter) or securely updating your email address.
+<p align="center">
+  <img src="./src/assets/platform-screenshot/changePasswordAuth.png" width="45%" alt="Change Password" />
+  <img src="./src/assets/platform-screenshot/changeEmailAuth.png" width="45%" alt="Change Email" />
+</p>
+
+### 📋 Audit & Security Logs
+A persistent, detailed record of all security events. It tracks login history, browser, OS, IP address, and security actions (e.g., password changes) with paginated views.
+<p align="center">
+  <img src="./src/assets/platform-screenshot/loginHistoryAuth.png" width="45%" alt="Login History" />
+  <img src="./src/assets/platform-screenshot/securityActivityAuth.png" width="45%" alt="Security Activity" />
+</p>
+
+### ⚠️ Danger Zone
+A protected section for critical and irreversible actions like account deletion, requiring password verification for safety.
+<p align="center">
+  <img src="./src/assets/platform-screenshot/dangerZoneAuth.png" width="45%" alt="Danger Zone" />
+</p>
+
+---
+
 ## 🚀 Highlights
 
 | | Feature |
